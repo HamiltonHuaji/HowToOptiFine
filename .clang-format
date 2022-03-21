@@ -1,0 +1,12 @@
+AlignConsecutiveAssignments: true
+AlignEscapedNewlines: Left
+AllowShortBlocksOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortIfStatementsOnASingleLine: true
+AllowShortLambdasOnASingleLine: true
+IndentWidth: 4
+ColumnLimit: 0
+BreakBeforeBraces: Attach
+AlwaysBreakTemplateDeclarations: false
+AllowShortFunctionsOnASingleLine: All
+AlignConsecutiveDeclarations: true

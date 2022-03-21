@@ -1,0 +1,4 @@
+shaders/
+.vscode/
+src/inc/glsl.hpp
+tools/blocks.txt

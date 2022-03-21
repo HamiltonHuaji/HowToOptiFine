@@ -1,0 +1,15 @@
+option.ABOUT=(^
+value.ABOUT.0=§fHowToOptiFine Example Shaders
+value.ABOUT.1=§bGitHub.com/HamiltonHuaji
+value.ABOUT.2=§fHamiltonHuaji says:
+value.ABOUT.3=§a"Thank you, BruceKnowsHow...
+value.ABOUT.4=§fI don't have to §ago §fany farther
+value.ABOUT.5=§fbut §aif §fyou do
+value.ABOUT.6=§fI'll be §avery proud§f of you."
+
+screen.Gamma=Gamma 校正
+option.GAMMA_CORRECTION=Gamma 校正
+option.GAMMA_CORRECTION.comment=启停 Gamma 校正模式; 调整 Gamma 值滑块使屏幕两侧亮度接近
+value.GAMMA_CORRECTION.0=已关闭 Gamma 校正模式
+value.GAMMA_CORRECTION.1=已启动 Gamma 校正模式
+option.GAMMA=Gamma 值

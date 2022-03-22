@@ -19,7 +19,7 @@ void main() {
     GBufferData gd;
     gd.rawData = texelFetch(tex_gbuffer, texelPos, 0);
     unpackGBufferData(gd);
-    gl_FragData[0].rgb = gd.diffuse + (random3d(uvec3(texelPos, frameCounter)) - .5f) / 2.f;
+    gl_FragData[0].rgb = gd.diffuse * (1.f + (random3d(uvec3(texelPos, frameCounter)) - .5f));
     gl_FragData[1].rg  = vec2(gd.smoothness, gd.metalness);
     
     // if (isCube(gd.blockID) && !isEmissive(gd.blockID)) { discard; }

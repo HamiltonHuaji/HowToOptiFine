@@ -36,7 +36,7 @@ vec2 getPrevTexCoord(out bool isVisible) {
     vec4 rawGBufferData     = texelFetch(tex_gbuffer, texelPos, 0);
     vec4 rawPrevGBufferData = texelFetch(tex_gbuffer_history, getTexelPosFromTexCoord(ivec2(viewSize), prevTexCoord), 0);
 
-    if (length(worldPos - prevWorldPos) > .1 || dot(gBufferNormal(rawGBufferData), gBufferNormal(rawPrevGBufferData)) < .95) {
+    if (length(worldPos - prevWorldPos) > .1 || pow(dot(gBufferNormal(rawGBufferData), gBufferNormal(rawPrevGBufferData)), 16) < .95) {
         isVisible = false;
     } else {
         isVisible = true;

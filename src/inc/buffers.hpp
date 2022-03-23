@@ -34,7 +34,7 @@ const bool colortex8Clear   = false;
 const bool colortex9Clear   = false;
 const bool shadowcolorClear = true;
 
-const vec4 shadowcolorClearColor = vec4(0, 0, 0, 1);
+const vec4 shadowcolorClearColor = vec4(0, 0, 0, 0);
 
 #ifndef RGBA32F
 #define RGBA32F 0

@@ -6,8 +6,20 @@
 #include "inc/uniforms.hpp"
 #include "inc/voxelspace.hpp"
 
-uniform sampler2D tex_voxel;
-uniform sampler2D tex_voxel_depth;
+////////////////////////////////////////////////////////////////////
+///  _____                            _              _   _ _ _   ///
+/// |_   _|                          | |            | | | | | |  ///
+///   | |  _ __ ___  _ __   ___  _ __| |_ __ _ _ __ | |_| | | |  ///
+///   | | | '_ ` _ \| '_ \ / _ \| '__| __/ _` | '_ \| __| | | |  ///
+///  _| |_| | | | | | |_) | (_) | |  | || (_| | | | | |_|_|_|_|  ///
+/// |_____|_| |_| |_| .__/ \___/|_|   \__\__,_|_| |_|\__(_|_|_)  ///
+///                 | |                                          ///
+///                 |_|                                          ///
+///        重要: 此处不能声明 uniform sampler2D tex_voxel;          ///
+///        否则 OptiFine 会不创建这块缓冲区, 读不到体素数据            ///
+////////////////////////////////////////////////////////////////////
+uniform sampler2D shadowcolor0;
+uniform sampler2D shadowtex0;
 uniform sampler2D tex_atlas_diffuse;
 uniform sampler2D tex_atlas_normal;
 uniform sampler2D tex_atlas_specular;
@@ -98,7 +110,6 @@ IntersectionData makeIntersectionData() {
         0);
 }
 
-#if 1
 int blockIntersect(Ray r, out float t, out VoxelData vd) {
     t            = 0; // important!!!
     vec3  invdir = 1.f / max(abs(r.dir), vec3(exp2(-12)));
@@ -112,32 +123,17 @@ int blockIntersect(Ray r, out float t, out VoxelData vd) {
         hitPos   = r.ori + (t + exp2(-12)) * r.dir;
         voxelPos = ivec3(floor(hitPos));
         vd       = sampleVoxelData(getTexelPosFromVoxelPos(voxelPos));
-        unpackVoxelData(vd);
-        if (!isAir(vd.blockID)) {
-            return i;
+        if (vd.rawData.a > 0) {
+            unpackVoxelData(vd);
+            if (!isAir(vd.blockID)) {
+                return i;
+            }
         }
         hitDist = abs(vec3(voxelPos + rsign) - (r.ori + t * r.dir)) * invdir;
     }
     t = -1;
     return -1;
 }
-#else
-int blockIntersect(Ray r, out float t, out VoxelData vd) {
-    vd.blockID = -1;
-    ivec3 p    = ivec3(floor(r.ori));
-    ivec3 q    = p;
-    for (t = 0; t < 5; t += .01) {
-        p = ivec3(floor(r.ori + r.dir * t));
-        if (p == q) { continue; }
-        vd = sampleVoxelData(getTexelPosFromVoxelPos(p, 0));
-        if (vd.rawData.a < 1) {
-            return 1;
-        }
-        q = p;
-    }
-    return -1;
-}
-#endif
 
 float lightDropdown(float t) {
     if (t <= 16) { return 1; }

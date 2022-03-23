@@ -35,7 +35,7 @@ void packGBufferData(inout GBufferData gd) {
     uint a          = packUnorm4x8(vec4(gd.diffuse, gd.smoothness));
     uint b          = packSnorm4x8(vec4(gd.normal, gd.metalness));
     uint c          = packSnorm4x8(vec4(gd.tangent, gd.emissivity));
-    uint d          = packUnorm2x16(vec2(gd.blockID) / 65536.0f);
+    uint d          = packUnorm2x16(vec2(gd.blockID) / 65535.0f);
     gd.rawData.xyzw = uintBitsToFloat(uvec4(a, b, c, d));
 }
 
@@ -51,5 +51,5 @@ void unpackGBufferData(inout GBufferData gd) {
     gd.tangent    = unpackSnorm4x8(abcd.z).xyz;
     gd.emissivity = unpackSnorm4x8(abcd.z).w;
 
-    gd.blockID = uint(unpackUnorm2x16(abcd.w).x * 65536);
+    gd.blockID = uint(unpackUnorm2x16(abcd.w).x * 65535);
 }

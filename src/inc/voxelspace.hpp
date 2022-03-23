@@ -57,13 +57,22 @@ void packVoxelData(inout VoxelData vd) {
     uint a          = packUnorm2x16(vd.midTexCoord);
     uint b          = packUnorm2x16(vd.spriteSize);
     uint c          = packUnorm4x8(vec4(vd.color, 1.f));
-    uint d          = packUnorm2x16(vec2(vd.blockID) / 65536.0f);
-    vd.rawData.xyzw = uintBitsToFloat(uvec4(a, b, c, d));
+
+    uint d          = packUnorm2x16(vec2(vd.blockID) / 65535.0f);
+    // ver 1, 不可用
+    // vd.rawData.xyzw = uintBitsToFloat(uvec4(a, b, c, d));
+
+    // ver 2, 可用
+    vd.rawData.xyzw = vec4(uintBitsToFloat(uvec3(a, b, c)), float(vd.blockID) / 65535.0f);
 }
 void unpackVoxelData(inout VoxelData vd) {
     uvec4 abcd     = floatBitsToUint(vd.rawData.xyzw);
     vd.midTexCoord = unpackUnorm2x16(abcd.x);
     vd.spriteSize  = unpackUnorm2x16(abcd.y);
     vd.color       = unpackUnorm4x8(abcd.z).rgb;
-    vd.blockID     = uint(unpackUnorm2x16(abcd.w).x * 65536);
+
+    // ver 1
+    // vd.blockID     = uint(float(unpackUnorm2x16(abcd.w).x) * 65535);
+    // ver 2
+    vd.blockID     = uint(vd.rawData.w * 65535);
 }

@@ -51,5 +51,5 @@ void unpackGBufferData(inout GBufferData gd) {
     gd.tangent    = unpackSnorm4x8(abcd.z).xyz;
     gd.emissivity = unpackSnorm4x8(abcd.z).w;
 
-    gd.blockID = int(unpackUnorm2x16(abcd.w).x * 65536);
+    gd.blockID = uint(unpackUnorm2x16(abcd.w).x * 65536);
 }

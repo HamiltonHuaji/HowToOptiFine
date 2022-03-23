@@ -1,7 +1,7 @@
 #pragma once
 
 // 光线反射次数上限
-#define MAX_LIGHT_BOUNCE 3 // [2 3 4 5]
+#define MAX_LIGHT_BOUNCE 3 // [1 2 3 4 5]
 
 // sample per pixel
 #define SAMPLE_PER_PIXEL 8 // [1 2 4 8 16 32 64]

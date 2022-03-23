@@ -36,10 +36,6 @@ struct Ray {
     // 沿着光线路径遇到的 BRDF 和余弦投影之连乘积
     vec4 product;
 };
-struct Illuminance {
-    vec4 direct;
-    vec4 indirect;
-};
 
 Ray emitRayFromVoxelPos(vec3 origin, vec3 dir) {
     return Ray(origin, normalize(dir), vec4(1.f));

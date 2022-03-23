@@ -17,9 +17,7 @@
 #define tex_motion_vector               colortex4
 #define tex_moments_history             colortex5
 #define tex_diffuse_direct              colortex6
-#define tex_diffuse_indirect            colortex7
-#define tex_diffuse_direct_history      colortex8
-#define tex_diffuse_indirect_history    colortex9
+#define tex_diffuse_direct_history      colortex7
 /* clang-format on */
 
 const bool colortex0Clear   = true;
@@ -29,7 +27,7 @@ const bool colortex3Clear   = false;
 const bool colortex4Clear   = true;
 const bool colortex5Clear   = false;
 const bool colortex6Clear   = true;
-const bool colortex7Clear   = true;
+const bool colortex7Clear   = false;
 const bool colortex8Clear   = false;
 const bool colortex9Clear   = false;
 const bool shadowcolorClear = true;

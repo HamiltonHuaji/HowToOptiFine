@@ -12,11 +12,8 @@ uniform sampler2D tex_gbuffer_depth;
 uniform sampler2D tex_worldpos;
 
 #include "core/raytrace/diffuse.hpp"
-// vec3 random3d(uvec3 seed) {
-//     return vec3(pcg3d(seed)) * (1.f / float(0xffffffffu));
-// }
 
-#pragma rendertargets(6, 7)
+#pragma rendertargets(6)
 void main() {
 
     float depth = texelFetch(tex_gbuffer_depth, texelPos, 0).r;
@@ -29,8 +26,7 @@ void main() {
     gd.rawData = texelFetch(tex_gbuffer, texelPos, 0);
     unpackGBufferData(gd);
     if ((gd.emissivity > .0125) || isEmissive(gd.blockID)) {
-        gl_FragData[0].rgb = gd.diffuse;
-        gl_FragData[1] = vec4(0.f);
+        gl_FragData[0] = vec4(0);
         return;
     }
     vec3 binormal = normalize(cross(gd.tangent, gd.normal));
@@ -39,9 +35,11 @@ void main() {
     vec3 worldPos = texture(tex_worldpos, texCoord).xyz;
     vec3 primaryRayEndVoxelPos = getVoxelPosFromLocalPos(worldPos - cameraPosition);
 
-    Illuminance illuminance = raytrace_diffuse(primaryRayEndVoxelPos, tbn, uvec4(texelPos, frameCounter, 0));
-    gl_FragData[0] = illuminance.direct;
-    gl_FragData[1] = illuminance.indirect;
+    vec4 illuminance = vec4(0);
+    for (int i = 0; i < SAMPLE_PER_PIXEL; i++) {
+        illuminance += raytrace_diffuse(primaryRayEndVoxelPos, tbn, uvec4(texelPos, frameCounter ^ i, 0));
+    }
+    gl_FragData[0] = illuminance / float(SAMPLE_PER_PIXEL);
 
     // gl_FragData[0].rgb = gd.diffuse * (1.f + (random3d(uvec3(texelPos, frameCounter)) - .5f));
     // gl_FragData[1].rgb = vec3(gd.smoothness, gd.metalness, gd.emissivity);

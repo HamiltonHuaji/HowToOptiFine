@@ -174,13 +174,13 @@ def dfsprocess(target, qid, depth=0):
             ts = [g.strip() for g in gs]
             assert len([t for t in ts if len(t) == 0]) == 0, f"render targets 声明有误: {s}"
             return ",".join(ts)
-        drawbuffers = re.compile("^#pragma\s+drawbuffers\(([0-9]+)\)$")
+        drawbuffers = re.compile("^\s*#pragma\s+drawbuffers\(([0-9]+)\)")
         replaced_content = [drawbuffers.sub(
             (lambda tg:f"/* RENDERTARGETS: {processDrawBuffers(tg.group(1))} */"), l) for l in buffer if l != ""]
         binliterals = re.compile("0b([0-9]+)")
         replaced_content = [binliterals.sub(
             (lambda tg:f"{hex(int(tg.group(1), base=2))}"), l) for l in replaced_content if l != ""]
-        rendertargets = re.compile("^#pragma\s+rendertargets\(([0-9,\s]+)\)$")
+        rendertargets = re.compile("^\s*#pragma\s+rendertargets\(([0-9,\s]+)\)")
         sources[target]['content'] = "\n".join([rendertargets.sub(
             (lambda tg:f"/* RENDERTARGETS: {processRenderTargets(tg.group(1))} */"), l) for l in replaced_content if l != ""])
 

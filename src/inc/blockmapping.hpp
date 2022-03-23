@@ -10,7 +10,8 @@ const uint selector_mask    = 0b1111111100000000;
 const uint facing_mask      = 0b0000011100000000;
 
 /* clang-format off */
-bool isCube(uint ID)         { return (shape_mask & ID) <= 2; }
+bool isAir(uint ID)          { return (shape_mask & ID) == 0; }
+bool isCube(uint ID)         { return (shape_mask & ID) == 1; }
 bool isFacingCube(uint ID)   { return (shape_mask & ID) == 2; }
 bool isLowCube(uint ID)      { return (shape_mask & ID) == 4; }
 bool isPane(uint ID)         { return (shape_mask & ID) == 5; }

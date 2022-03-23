@@ -1,7 +1,7 @@
 #include "inc/buffers.hpp"
+#include "inc/gbuffer.hpp"
 #include "inc/glsl.hpp"
 #include "inc/uniforms.hpp"
-#include "inc/gbuffer.hpp"
 #include "inc/utils.hpp"
 
 vec2  texCoord = gl_FragCoord.xy / viewSize;
@@ -85,7 +85,6 @@ void main() {
     if (alpha > 0) {
         alpha = max(alpha, 1.f / history.b);
     }
-    if (texCoord.x < .1 && texCoord.y < .1) { alpha = 1.f; }
 
     // Accumulate color and moment2 here.
     // integratedColor = mix(old.color, now.color, alpha);

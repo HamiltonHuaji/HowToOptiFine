@@ -27,12 +27,12 @@ void main() {
     GBufferData gd;
     gd.rawData = texelFetch(tex_gbuffer, texelPos, 0);
     unpackGBufferData(gd);
-    if (gd.emissivity > .0125) {
-        gl_FragData[0].rgb = gd.diffuse * gd.emissivity;
+    if ((gd.emissivity > .0125) || isEmissive(gd.blockID)) {
+        gl_FragData[0].rgb = gd.diffuse;
         gl_FragData[1] = vec4(0.f);
         return;
     }
-        return;
+    
     gl_FragData[0].rgb = gd.diffuse * (1.f + (random3d(uvec3(texelPos, frameCounter)) - .5f));
     gl_FragData[1].rgb = vec3(gd.smoothness, gd.metalness, gd.emissivity);
     

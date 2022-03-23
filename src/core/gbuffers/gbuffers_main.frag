@@ -24,13 +24,13 @@ void main() {
     vec4 diffuse = sRGB2linear(texture(tex, texCoord) * vec4(color, 1.f));
     if (diffuse.a < .0125) { discard; } // 丢弃树叶等材质的镂空部分
 
-    vec3 spec     = texture(specular, texCoord).rgb; // b for emissive
+    vec4 spec     = texture(specular, texCoord).rgba;
     gd.blockID    = blockID;
     gd.diffuse    = diffuse.rgb;
     gd.normal     = normal;
     gd.smoothness = spec.r;
     gd.metalness  = spec.g;
-    gd.emissivity = spec.b;
+    gd.emissivity = spec.a; // LabPBR
     gd.tangent    = tangent;
     packGBufferData(gd);
     gl_FragData[0] = gd.rawData;

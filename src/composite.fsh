@@ -32,6 +32,7 @@ void main() {
         gl_FragData[1] = vec4(0.f);
         return;
     }
+        return;
     gl_FragData[0].rgb = gd.diffuse * (1.f + (random3d(uvec3(texelPos, frameCounter)) - .5f));
     gl_FragData[1].rgb = vec3(gd.smoothness, gd.metalness, gd.emissivity);
     

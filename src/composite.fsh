@@ -8,6 +8,7 @@ vec2  texCoord = gl_FragCoord.xy / viewSize;
 ivec2 texelPos = ivec2(gl_FragCoord.xy);
 
 uniform sampler2D tex_gbuffer;
+uniform sampler2D tex_gbuffer_depth;
 
 #include "inc/random.hpp"
 vec3 random3d(uvec3 seed) {
@@ -16,11 +17,23 @@ vec3 random3d(uvec3 seed) {
 
 #pragma rendertargets(6, 7)
 void main() {
+
+    float depth = texelFetch(tex_gbuffer_depth, texelPos, 0).r;
+    if (depth >= 1.0) {
+        gl_FragData[0] = gl_FragData[1] = vec4(.36078, .63137, .84706, 1.);
+        return;
+    }
+
     GBufferData gd;
     gd.rawData = texelFetch(tex_gbuffer, texelPos, 0);
     unpackGBufferData(gd);
+    if (gd.emissivity > .0125) {
+        gl_FragData[0].rgb = gd.diffuse * gd.emissivity;
+        gl_FragData[1] = vec4(0.f);
+        return;
+    }
     gl_FragData[0].rgb = gd.diffuse * (1.f + (random3d(uvec3(texelPos, frameCounter)) - .5f));
-    gl_FragData[1].rg  = vec2(gd.smoothness, gd.metalness);
+    gl_FragData[1].rgb = vec3(gd.smoothness, gd.metalness, gd.emissivity);
     
     // if (isCube(gd.blockID) && !isEmissive(gd.blockID)) { discard; }
     // if (isFence(gd.blockID) && (isWest(gd.blockID) || isNorth(gd.blockID))) { discard; }

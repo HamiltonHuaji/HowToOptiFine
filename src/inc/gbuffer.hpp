@@ -10,21 +10,19 @@ uint high8(uint ID) { return (ID & high8_mask) >> 8; }
 struct GBufferData {
     vec4 rawData;
 
-    // (3 + 1) * 8 位精度, 丢弃 diffuse.a, 放入 blockID 的高 8 位
-    vec3 diffuse;
-    uint _blockIDHigh8;
-
-    // (3 + 1) * 8 位精度
-    vec3  normal;
+    // (3 + 1) * 8 位精度, 丢弃 diffuse.a
+    vec3  diffuse;
     float smoothness;
 
     // (3 + 1) * 8 位精度
-    vec3  tangent;
+    vec3  normal;
     float metalness;
 
-    // blockID 的低 8 位
-    uint _blockIDLow8;
+    // (3 + 1) * 8 位精度
+    vec3  tangent;
+    float emissivity;
 
+    // 16 位精度
     uint blockID;
 };
 
@@ -34,27 +32,24 @@ vec3 gBufferNormal(vec4 rawData) {
 }
 
 void packGBufferData(inout GBufferData gd) {
-    gd._blockIDHigh8 = high8(gd.blockID);
-    gd._blockIDLow8  = low8(gd.blockID);
-    uint a           = packUnorm4x8(vec4(gd.diffuse, float(gd._blockIDHigh8) / 256));
-    uint b           = packSnorm4x8(vec4(gd.normal, gd.smoothness));
-    uint c           = packSnorm4x8(vec4(gd.tangent, gd.metalness));
-    uint d           = gd._blockIDLow8;
-    gd.rawData.xyzw  = uintBitsToFloat(uvec4(a, b, c, d));
+    uint a          = packUnorm4x8(vec4(gd.diffuse, gd.smoothness));
+    uint b          = packSnorm4x8(vec4(gd.normal, gd.metalness));
+    uint c          = packSnorm4x8(vec4(gd.tangent, gd.emissivity));
+    uint d          = packUnorm2x16(vec2(gd.blockID) / 256.0f);
+    gd.rawData.xyzw = uintBitsToFloat(uvec4(a, b, c, d));
 }
 
 void unpackGBufferData(inout GBufferData gd) {
     uvec4 abcd = floatBitsToUint(gd.rawData.xyzw);
 
-    gd.diffuse       = unpackUnorm4x8(abcd.x).xyz;
-    gd._blockIDHigh8 = uint(unpackUnorm4x8(abcd.x).w * 256);
+    gd.diffuse    = unpackUnorm4x8(abcd.x).xyz;
+    gd.smoothness = unpackUnorm4x8(abcd.x).w;
 
-    gd.normal     = unpackSnorm4x8(abcd.y).xyz;
-    gd.smoothness = unpackSnorm4x8(abcd.y).w;
+    gd.normal    = unpackSnorm4x8(abcd.y).xyz;
+    gd.metalness = unpackSnorm4x8(abcd.y).w;
 
-    gd.tangent   = unpackSnorm4x8(abcd.z).xyz;
-    gd.metalness = unpackSnorm4x8(abcd.z).w;
+    gd.tangent    = unpackSnorm4x8(abcd.z).xyz;
+    gd.emissivity = unpackSnorm4x8(abcd.z).w;
 
-    gd._blockIDLow8 = abcd.w;
-    gd.blockID      = gd._blockIDLow8 | (gd._blockIDHigh8 << 8);
+    gd.blockID = int(unpackUnorm2x16(abcd.w).x * 256);
 }

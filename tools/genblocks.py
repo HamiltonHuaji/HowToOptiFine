@@ -312,7 +312,7 @@ def pane_shape(b: str):
     '''
     过方块中心的平面
     '''
-    return is_glass_pane(b) | is_nether_portal(b)
+    return is_glass_pane(b) | is_iron_bars(b)
 def subvoxel_shape(b: str):
     '''
     使用 8 个体素描述的方块. 不存在朝向
@@ -358,11 +358,11 @@ def unknow_shape(b):
     return True
 
 def has_facing(b):
-    return facing_cube_shape(b) or pane_shape(b) or wall_torch_shape(b) or end_rod_shape(b)
+    return facing_cube_shape(b) or wall_torch_shape(b) or end_rod_shape(b)
 def has_lit(b):
     return is_furnace(b) or is_smoker(b) or is_redstone_lamp(b) or is_campfire(b) or is_redstone_ore(b) or is_redstone_torch(b)
 def has_nsew(b):
-    return fence_shape(b)
+    return fence_shape(b) or pane_shape(b)
 def has_hanging(b):
     return lantern_shape(b)
 

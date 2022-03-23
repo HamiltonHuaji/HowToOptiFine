@@ -30,6 +30,7 @@ void main() {
     gd.normal     = normal;
     gd.smoothness = spec.r;
     gd.metalness  = spec.g;
+    gd.emissivity = spec.b;
     gd.tangent    = tangent;
     packGBufferData(gd);
     gl_FragData[0] = gd.rawData;

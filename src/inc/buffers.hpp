@@ -2,8 +2,13 @@
 
 #include "inc/glsl.hpp"
 
-#define tex_gbuffer_depth       depthtex0
+#define tex_voxel                       shadowcolor0
+#define tex_voxel_depth                 shadowtex0
+#define tex_atlas_diffuse               depthtex1
+#define tex_atlas_specular              shadowtex1
+#define tex_atlas_normal                depthtex2
 
+#define tex_gbuffer_depth               depthtex0
 #define tex_gbuffer                     colortex0
 #define tex_worldpos                    colortex1
 #define tex_gbuffer_history             colortex2

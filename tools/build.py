@@ -41,8 +41,14 @@ sourceTemplates = {
         ".vsh": '#include "core/gbuffers/gbuffers_discard.vert"',
         ".fsh": '#include "core/gbuffers/gbuffers_discard.frag"'
     },
+    "shadow": {
+        ".vsh": '#include "core/shadow/shadow.vert"',
+        ".gsh": '#include "core/shadow/shadow.geom"',
+        ".fsh": '#include "core/shadow/shadow.frag"',
+    }
 }
 virtualSourceFiles = {
+    f"{sourcedir}/shadow": "shadow",
     f"{sourcedir}/gbuffers_basic": "main",
     f"{sourcedir}/gbuffers_skybasic": "discard",
     f"{sourcedir}/gbuffers_skytextured": "discard",

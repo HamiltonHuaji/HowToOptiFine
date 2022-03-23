@@ -9,11 +9,12 @@ ivec2 texelPos = ivec2(gl_FragCoord.xy);
 
 uniform sampler2D tex_gbuffer;
 uniform sampler2D tex_gbuffer_depth;
+uniform sampler2D tex_worldpos;
 
-#include "inc/random.hpp"
-vec3 random3d(uvec3 seed) {
-    return vec3(pcg3d(seed)) * (1.f / float(0xffffffffu));
-}
+#include "core/raytrace/diffuse.hpp"
+// vec3 random3d(uvec3 seed) {
+//     return vec3(pcg3d(seed)) * (1.f / float(0xffffffffu));
+// }
 
 #pragma rendertargets(6, 7)
 void main() {
@@ -32,9 +33,18 @@ void main() {
         gl_FragData[1] = vec4(0.f);
         return;
     }
-    
-    gl_FragData[0].rgb = gd.diffuse * (1.f + (random3d(uvec3(texelPos, frameCounter)) - .5f));
-    gl_FragData[1].rgb = vec3(gd.smoothness, gd.metalness, gd.emissivity);
+    vec3 binormal = normalize(cross(gd.tangent, gd.normal));
+    mat3 tbn      = mat3(gd.tangent, binormal, gd.normal);
+
+    vec3 worldPos = texture(tex_worldpos, texCoord).xyz;
+    vec3 primaryRayEndVoxelPos = getVoxelPosFromLocalPos(worldPos - cameraPosition);
+
+    Illuminance illuminance = raytrace_diffuse(primaryRayEndVoxelPos, tbn, uvec4(texelPos, frameCounter, 0));
+    gl_FragData[0] = illuminance.direct;
+    gl_FragData[1] = illuminance.indirect;
+
+    // gl_FragData[0].rgb = gd.diffuse * (1.f + (random3d(uvec3(texelPos, frameCounter)) - .5f));
+    // gl_FragData[1].rgb = vec3(gd.smoothness, gd.metalness, gd.emissivity);
     
     // if (isCube(gd.blockID) && !isEmissive(gd.blockID)) { discard; }
     // if (isFence(gd.blockID) && (isWest(gd.blockID) || isNorth(gd.blockID))) { discard; }

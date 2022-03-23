@@ -42,3 +42,8 @@ const float gaussKernel[3][3] = float[3][3](
     float[3](1.0 / 16.0, 1.0 / 8.0, 1.0 / 16.0),
     float[3](1.0 / 8.0, 1.0 / 4.0, 1.0 / 8.0),
     float[3](1.0 / 16.0, 1.0 / 8.0, 1.0 / 16.0));
+
+// 阴影贴图分辨率
+const int shadowMapResolution = 8192;
+// 可投下阴影的物体的最大距离
+const float shadowDistance = 128;

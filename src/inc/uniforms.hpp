@@ -1,11 +1,6 @@
 #pragma once
 #include "inc/glsl.hpp"
 
-const bool  shadowcolorClear      = true;
-const vec4  shadowcolorClearColor = vec4(0, 0, 0, 1);
-const int   shadowMapResolution   = 8192;
-const float shadowDistance        = 128;
-
 uniform mat4 gbufferProjection;
 uniform mat4 gbufferProjectionInverse;
 uniform mat4 gbufferModelView;

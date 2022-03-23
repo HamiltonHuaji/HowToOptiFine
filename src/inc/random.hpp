@@ -1,3 +1,4 @@
+#pragma once
 #include "inc/glsl.hpp"
 uvec2 pcg2d(uvec2 v) {
     v = v * 1664525u + 1013904223u;

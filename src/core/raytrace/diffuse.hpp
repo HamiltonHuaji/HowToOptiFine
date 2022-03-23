@@ -29,12 +29,12 @@ Illuminance raytrace_diffuse(vec3 voxelPos, mat3 tbn, uvec4 seed) {
         // 求交到透明物, 暂时进行不太物理的处理, 即假设没有反射光.
         // 光线继续前进, 但给光线乘上当前方块的颜色(而非乘上与方块内行进路线长度相关的量, 不太物理×2)
         // 多向方块内行进一个小距离, 使新的光线起点落在方块内部
-        r.ori = r.ori + r.dir * itd.t + exp2(-12) * itd.normal;
+        r.ori = r.ori + r.dir * itd.t - exp2(-12) * itd.normal;
         r.product *= itd.diffuse;
     } else if (itd.diffuse.a < .0125) {
         // 求交到树叶等材质的镂空部分
         // 光线同样继续前进
-        r.ori = r.ori + r.dir * itd.t + exp2(-12) * itd.normal;
+        r.ori = r.ori + r.dir * itd.t - exp2(-12) * itd.normal;
     } else {
         // 求交到材质的不透明部分, 由于考虑的是 L(D|T)*E 的路径, 直接生成随机方向的反射光
         r.ori = r.ori + itd.t * r.dir + exp2(-12) * itd.normal;
@@ -50,10 +50,10 @@ Illuminance raytrace_diffuse(vec3 voxelPos, mat3 tbn, uvec4 seed) {
                 break;
             } else if (bounce < MAX_LIGHT_BOUNCE) {
                 if (itd.isTranslucent) {
-                    r.ori = r.ori + r.dir * itd.t + exp2(-12) * itd.normal;
+                    r.ori = r.ori + r.dir * itd.t - exp2(-12) * itd.normal;
                     r.product *= itd.diffuse;
                 } else if (itd.diffuse.a < .0125) {
-                    r.ori = r.ori + r.dir * itd.t + exp2(-12) * itd.normal;
+                    r.ori = r.ori + r.dir * itd.t - exp2(-12) * itd.normal;
                 } else {
                     r.ori = r.ori + r.dir * itd.t + exp2(-12) * itd.normal;
                     r.dir = generateDummyTBN(itd.normal) * uniform2dToHemisphere(random2d(seed + uvec4(0, 0, 0, 1)));

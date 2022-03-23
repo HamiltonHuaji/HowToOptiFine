@@ -27,7 +27,11 @@ void main() {
     vec4 spec     = texture(specular, texCoord).rgba;
     gd.blockID    = blockID;
     gd.diffuse    = diffuse.rgb;
-    gd.normal     = normal;
+    if (gl_FrontFacing) {
+        gd.normal = normal;
+    } else {
+        gd.normal = -normal;
+    }
     gd.smoothness = spec.r;
     gd.metalness  = spec.g;
     gd.emissivity = spec.a; // LabPBR

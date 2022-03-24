@@ -25,6 +25,8 @@ vec4 linear2sRGB(vec4 c) {
 float luminance(vec3 c) {
     return dot(c, vec3(0.2126, 0.7152, 0.0722));
 }
+float saturate(float x) { return clamp(x, 0.0, 1.0); }
+
 const float pi = 3.1415926535897932;
 // vec3 direction = TBN * uniform2dToHemisphere(some_random_uniform2d)
 vec3 uniform2dToHemisphere(vec2 r) {

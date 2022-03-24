@@ -67,21 +67,10 @@ bool loadPrevData(out vec4 prevIllum, out vec2 prevMoments, out float historyLen
         tapValid[sampleIdx] = isReprojValid(prevTexCoord, rawCurrGBufferData, currWorldPos, rawPrevGBufferData, prevWorldPos);
         valid = valid || tapValid[sampleIdx];
     }
-    // if (valid) {
-    //     prevIllum   = texelFetch(tex_diffuse_direct, prevTexelPos, 0);
-    //     prevMoments = texelFetch(tex_moments_history, prevTexelPos, 0).xy;
-    //     historyLength = texelFetch(tex_moments_history, prevTexelPos, 0).z;
-    // } else {
-    //     prevIllum   = vec4(0,0,0,0);
-    //     prevMoments = vec2(0,0);
-    //     historyLength = 0;
-    // }
-    // return valid;
 
     if (valid) {
         float sumw = 0;
 
-        // vec2 fractPrevTexelPos = vec2(0);
         vec2 fractPrevTexelPos = fract(unnormPrevTexelCoord);
 
         /* clang-format off */
@@ -90,7 +79,6 @@ bool loadPrevData(out vec4 prevIllum, out vec2 prevMoments, out float historyLen
                                   fractPrevTexelPos.x  * (1 - fractPrevTexelPos.y),
                              (1 - fractPrevTexelPos.x) *      fractPrevTexelPos.y,
                                   fractPrevTexelPos.x  *      fractPrevTexelPos.y };
-        // const float w[4] = { 1, 0, 0, 0 };
         /* clang-format on */
 
         // perform the actual bilinear interpolation
@@ -98,7 +86,7 @@ bool loadPrevData(out vec4 prevIllum, out vec2 prevMoments, out float historyLen
             ivec2 loc = prevTexelPos + tapOffset[sampleIdx];
             if (tapValid[sampleIdx]) {
                 prevIllum   += w[sampleIdx] * texelFetch(tex_diffuse_direct_history, loc, 0);
-                prevMoments += w[sampleIdx] * texelFetch(tex_moments_history, loc, 0).xy;
+                prevMoments += w[sampleIdx] * texelFetch(tex_moments_history, loc, 0).moments;
                 sumw        += w[sampleIdx];
              }
         }
@@ -122,7 +110,7 @@ bool loadPrevData(out vec4 prevIllum, out vec2 prevMoments, out float historyLen
 
                 if (isReprojValid(prevTexCoord, rawCurrGBufferData, currWorldPos, rawPrevGBufferData, prevWorldPos)) {
                     prevIllum   += texelFetch(tex_diffuse_direct_history, p, 0);
-                    prevMoments += texelFetch(tex_moments_history, p, 0).xy;
+                    prevMoments += texelFetch(tex_moments_history, p, 0).moments;
                     nValid += 1.0;
                 }
             }
@@ -135,7 +123,7 @@ bool loadPrevData(out vec4 prevIllum, out vec2 prevMoments, out float historyLen
     }
 
     if (valid) {
-        historyLength = texelFetch(tex_moments_history, prevTexelPos, 0).z;
+        historyLength = texelFetch(tex_moments_history, prevTexelPos, 0).history_length;
     }
     else {
         prevIllum   = vec4(0,0,0,0);
@@ -146,16 +134,15 @@ bool loadPrevData(out vec4 prevIllum, out vec2 prevMoments, out float historyLen
 }
 
 // TAA, 重投影光照部分; 不更新颜色历史, 只更新二阶矩的历史和有效历史长度
-#pragma rendertargets(5, 6, 15)
+#pragma rendertargets(5, 6, 14)
 void main() {
     float Alpha = 0.1f;
     float AlphaMoments = 0.1f;
 
     float depth = texelFetch(tex_gbuffer_depth, texelPos, 0).r;
     if (depth >= 1.0) {
-        gl_FragData[0] = vec4(0, 0, 0, 0);
+        gl_FragData[0] = vec4(0, 0, 1, 0);
         gl_FragData[1] = vec4(0, 0, 0, 0);
-        gl_FragData[2] = vec4(0, 0, 0, 0);
         return; // 天空
     }
 
@@ -189,5 +176,5 @@ void main() {
 
     gl_FragData[0] = outMomentsHistory;
     gl_FragData[1] = outIllumination;
-    gl_FragData[2] = vec4(alpha, .1f * sqrt(variance) / max(1e-3, luminance(outIllumination.rgb)), success ? 1 : 0, 1);
+    gl_FragData[2] = vec4(outIllumination.rgb, 1.f);
 }

@@ -30,20 +30,19 @@
 #define ABOUT 0 // [0 1 2 3 4 5 6]
 
 // A-trous 滤波器核
-const float atrousKernel[5][5] = float[5][5](
-    float[5](1.0 / 256.0, 1.0 / 64.0, 3.0 / 128.0, 1.0 / 64.0, 1.0 / 256.0),
-    float[5](1.0 / 64.0, 1.0 / 16.0, 3.0 / 32.0, 1.0 / 16.0, 1.0 / 64.0),
-    float[5](3.0 / 128.0, 3.0 / 32.0, 9.0 / 64.0, 3.0 / 32.0, 3.0 / 128.0),
-    float[5](1.0 / 64.0, 1.0 / 16.0, 3.0 / 32.0, 1.0 / 16.0, 1.0 / 64.0),
-    float[5](1.0 / 256.0, 1.0 / 64.0, 3.0 / 128.0, 1.0 / 64.0, 1.0 / 256.0));
+const float atrousKernel[3] = { 1.0, 2.0 / 3.0, 1.0 / 6.0 };
 
 // 高斯卷积核
-const float gaussKernel[3][3] = float[3][3](
-    float[3](1.0 / 16.0, 1.0 / 8.0, 1.0 / 16.0),
-    float[3](1.0 / 8.0, 1.0 / 4.0, 1.0 / 8.0),
-    float[3](1.0 / 16.0, 1.0 / 8.0, 1.0 / 16.0));
+const float gaussKernel[2][2] = float[2][2](
+    float[2](1.0 / 4.0, 1.0 / 8.0),
+    float[2](1.0 / 8.0, 1.0 / 16.0));
 
 // 阴影贴图分辨率
 const int shadowMapResolution = 8192;
 // 可投下阴影的物体的最大距离
 const float shadowDistance = 128;
+
+#define moment1 r
+#define moment2 g
+#define moments rg
+#define history_length b

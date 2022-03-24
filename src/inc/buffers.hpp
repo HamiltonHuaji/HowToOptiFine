@@ -52,3 +52,6 @@ const int colortex6Format    = RGBA32F;
 const int colortex7Format    = RGBA32F;
 const int colortex8Format    = RGBA32F;
 const int colortex9Format    = RGBA32F;
+const int colortex13Format    = RGBA32F;
+const int colortex14Format    = RGBA32F;
+const int colortex15Format    = RGBA32F;

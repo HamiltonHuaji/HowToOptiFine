@@ -1,0 +1,1 @@
+#include "core/svgf/flush_illumination_history.hpp"

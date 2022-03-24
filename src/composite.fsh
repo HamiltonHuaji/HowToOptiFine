@@ -37,11 +37,11 @@ void main() {
 
     vec4 illuminance = vec4(0);
     for (int i = 0; i < SAMPLE_PER_PIXEL; i++) {
-        illuminance += raytrace_diffuse(primaryRayEndVoxelPos, tbn, uvec4(texelPos, frameCounter ^ i, 0));
+        illuminance += raytrace_diffuse(primaryRayEndVoxelPos, tbn, uvec4(texelPos, frameCounter, 0));
     }
     gl_FragData[0] = illuminance / float(SAMPLE_PER_PIXEL);
 
-    // gl_FragData[0].rgb = gd.diffuse * (1.f + (random3d(uvec3(texelPos, frameCounter)) - .5f));
+    // gl_FragData[0].rgb = gd.diffuse;
     // gl_FragData[1].rgb = vec3(gd.smoothness, gd.metalness, gd.emissivity);
     
     // if (isCube(gd.blockID) && !isEmissive(gd.blockID)) { discard; }

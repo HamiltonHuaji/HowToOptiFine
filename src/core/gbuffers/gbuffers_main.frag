@@ -41,10 +41,10 @@ void main() {
     gl_FragData[1] = vec4(worldPos, 1.f);
 
     vec4 projPosPrev = gbufferPreviousProjection * gbufferPreviousModelView * vec4(worldPos - previousCameraPosition, 1.f);
-    projPosPrev.xyz /= projPosPrev.w;
+    projPosPrev /= projPosPrev.w;
+    projPosPrev += 1.f;
+    projPosPrev /= 2.f;
 
     vec3 curr = gl_FragCoord.xyz / vec3(viewWidth, viewHeight, 1.f);
-    curr *= 2.f;
-    curr -= 1.f;
     gl_FragData[2] = vec4(projPosPrev.xyz - curr, 0.f);
 }

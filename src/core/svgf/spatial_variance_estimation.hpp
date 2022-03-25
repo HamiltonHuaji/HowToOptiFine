@@ -54,9 +54,9 @@ void main() {
             return;
         }
         vec3  normalCenter     = gBufferNormal(texelFetch(tex_gbuffer, texelPos, 0));
-        float phiLIllumination = 4;
-        float phiDepth         = max(q_gradz, 1e-6) * 3.0;
-        float phiNormal        = 128;
+        float phiLIllumination = SIGMA_L;
+        float phiDepth         = SIGMA_Z * max(q_gradz, 1e-6);
+        float phiNormal        = SIGMA_N;
 
         // compute first and second moment spatially. This code also applies cross-bilateral
         // filtering on the input illumination.

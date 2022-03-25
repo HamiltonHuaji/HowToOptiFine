@@ -136,8 +136,6 @@ bool loadPrevData(out vec4 prevIllum, out vec2 prevMoments, out float historyLen
 // TAA, 重投影光照部分; 不更新颜色历史, 只更新二阶矩的历史和有效历史长度
 #pragma rendertargets(5, 6, 14)
 void main() {
-    float Alpha = 0.1f;
-    float AlphaMoments = 0.1f;
 
     float depth = texelFetch(tex_gbuffer_depth, texelPos, 0).r;
     if (depth >= 1.0) {
@@ -157,8 +155,8 @@ void main() {
     bool success = loadPrevData(prevIllumination, prevMoments, historyLength);
     historyLength = min(32.0f, success ? historyLength + 1.0f : 1.0f);
 
-    float alpha        = success ? max(Alpha,        1.0 / historyLength) : 1.0;
-    float alphaMoments = success ? max(AlphaMoments, 1.0 / historyLength) : 1.0;
+    float alpha        = success ? max(ALPHA,         1.0 / historyLength) : 1.0;
+    float alphaMoments = success ? max(ALPHA_MOMENTS, 1.0 / historyLength) : 1.0;
 
     vec2 currMoments;
     currMoments.r = luminance(illumination.rgb);

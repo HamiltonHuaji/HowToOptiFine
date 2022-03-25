@@ -56,6 +56,10 @@ void main() {
     if (any(isnan(illumination))) {
         illumination = vec4(0,0,0,1);
     }
+    if ((LEVEL >= ATROUS_FILTER_PASS) || (texCoord.x < .5f)){
+        gl_FragData[0] = illumination;
+        return;
+    }
     float illuminationIllumCenter = luminance(illumination.rgb);
 
     vec3  normalCenter = gBufferNormal(texelFetch(tex_gbuffer, texelPos, 0));
@@ -68,9 +72,9 @@ void main() {
 
     int stepSize = 1 << LEVEL;
 
-    float phiDepth  = 1 * max(q_gradz, 1e-8) * stepSize;
-    float phiNormal = 128;
-    float phiIllum  = 4 * sqrt(max(1e-8, var));
+    float phiDepth  = SIGMA_Z * max(q_gradz, 1e-8) * stepSize;
+    float phiNormal = SIGMA_N;
+    float phiIllum  = SIGMA_L * sqrt(max(1e-8, var));
 
     for (int yy = -2; yy <= 2; yy++) {
         for (int xx = -2; xx <= 2; xx++) {

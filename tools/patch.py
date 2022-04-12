@@ -97,7 +97,7 @@ class Screen:
 
 screen = Screen(background="colortex6")
 
-screen.add_targets(["colortex15", "colortex6"], maxwidth=.25)
+# screen.add_targets(["shadowcolor1", "shadowcolor0"], maxwidth=.25)
 os.makedirs(os.path.dirname("shaders/final.fsh"), exist_ok=True)
 with open("shaders/final.fsh", "w") as f:
     f.write(screen.build())

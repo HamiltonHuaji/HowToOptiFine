@@ -10,7 +10,7 @@ ivec2 texelPos = ivec2(gl_FragCoord.xy);
 
 uniform sampler2D tex_gbuffer;
 uniform sampler2D tex_gbuffer_depth;
-uniform sampler2D tex_worldpos;
+uniform sampler2D tex_localpos;
 uniform sampler2D tex_diffuse_direct;
 
 float computeVarianceCenter() {
@@ -56,7 +56,8 @@ void main() {
     if (any(isnan(illumination))) {
         illumination = vec4(0,0,0,1);
     }
-    if ((LEVEL >= ATROUS_FILTER_PASS) || (texCoord.x < .5f)){
+    // if ((LEVEL >= ATROUS_FILTER_PASS) || (texCoord.x < .5f)){
+    if (LEVEL >= ATROUS_FILTER_PASS){
         gl_FragData[0] = illumination;
         return;
     }

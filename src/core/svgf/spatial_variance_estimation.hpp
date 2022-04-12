@@ -10,7 +10,7 @@ ivec2 texelPos = ivec2(gl_FragCoord.xy);
 
 uniform sampler2D tex_gbuffer_depth;
 uniform sampler2D tex_gbuffer;
-uniform sampler2D tex_worldpos;
+uniform sampler2D tex_localpos;
 uniform sampler2D tex_moments_history;
 uniform sampler2D tex_diffuse_direct;
 

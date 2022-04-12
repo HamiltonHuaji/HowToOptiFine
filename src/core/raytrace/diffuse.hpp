@@ -11,7 +11,7 @@
 // 结果分为直接光照 LDE 部分和间接光照 L(D|T)*E部分
 // 并假设光源不受光照影响(反正也不太看得出来, 不太物理×3)
 vec4 raytrace_diffuse(vec3 voxelPos, mat3 tbn, uvec4 seed) {
-    Ray r = Ray(voxelPos + exp2(-12) * tbn[2], tbn * uniform2dToHemisphere(random2d(seed)), vec4(1.));
+    Ray r = Ray(voxelPos + exp2(-12) * tbn[2], tbn * stbnSampler(seed.xy, seed.z), vec4(1.));
 
     vec4 illuminance = vec4(0);
 
@@ -41,8 +41,10 @@ vec4 raytrace_diffuse(vec3 voxelPos, mat3 tbn, uvec4 seed) {
                 } else {
                     // 求交到材质的不透明部分, 由于考虑的是 L(D|T)*E 的路径, 直接生成随机方向的反射光
                     r.ori = r.ori + r.dir * itd.t + exp2(-12) * itd.normal;
-                    r.dir = generateDummyTBN(itd.normal) * uniform2dToHemisphere(random2d(seed + uvec4(0, 0, 0, bounce)));
-                    r.product *= itd.diffuse * lightDropdown(itd.t);
+                    r.dir = generateDummyTBN(itd.normal) * stbnSampler(seed.xy + uvec2(Martin_Roberts_R2(bounce-1)*128.0f), seed.z);
+                    // r.dir = generateDummyTBN(itd.normal) * uniform2dToHemisphere(random2d(seed + uvec4(0, 0, 0, bounce)));
+                    r.product *= itd.diffuse * lightDropdown(itd.t) * dot(r.dir, itd.normal);
+                    // 应在此时考虑材质被日光的照亮程度, 为 illuminance 加上 r.product * RSM(r.ori)
                 }
             } else {
                 // 没有下次求交了, 但还没碰到光源, 只能丢弃结果了
@@ -54,5 +56,6 @@ vec4 raytrace_diffuse(vec3 voxelPos, mat3 tbn, uvec4 seed) {
             break;
         }
     }
-    return r.product;
+    illuminance += r.product;
+    return illuminance;
 }

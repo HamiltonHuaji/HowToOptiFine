@@ -34,5 +34,5 @@ void main() {
     localPos = (shadowModelViewInverse * gl_ModelViewMatrix * gl_Vertex).xyz;
 
     // 无实义
-    gl_Position = vec4(0.0);
+    gl_Position = ftransform();
 }

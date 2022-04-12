@@ -12,15 +12,15 @@ ivec2 texelPos = ivec2(gl_FragCoord.xy);
 
 uniform sampler2D tex_gbuffer_depth;
 uniform sampler2D tex_gbuffer;
-uniform sampler2D tex_worldpos;
+uniform sampler2D tex_localpos;
 uniform sampler2D tex_gbuffer_history;
-uniform sampler2D tex_worldpos_history;
+uniform sampler2D tex_localpos_history;
 uniform sampler2D tex_motion_vector;
 uniform sampler2D tex_moments_history;
 uniform sampler2D tex_diffuse_direct;
 uniform sampler2D tex_diffuse_direct_history;
 
-bool isReprojValid(vec2 prevTexCoord, vec4 rawCurrGBufferData, vec4 currWorldPos, vec4 rawPrevGBufferData, vec4 prevWorldPos) {
+bool isReprojValid(vec2 prevTexCoord, vec4 rawCurrGBufferData, vec3 currWorldPos, vec4 rawPrevGBufferData, vec3 prevWorldPos) {
     vec2 prevCheck = abs(prevTexCoord - vec2(.5f));
     if (prevCheck.x > .5f || prevCheck.y > .5f) {
         return false;
@@ -42,7 +42,7 @@ bool loadPrevData(out vec4 prevIllum, out vec2 prevMoments, out float historyLen
     vec2 prevTexCoord = getPrevTexCoord();
 
     vec4  rawCurrGBufferData = texelFetch(tex_gbuffer, texelPos, 0);
-    vec4  currWorldPos       = texelFetch(tex_worldpos, texelPos, 0);
+    vec3  currWorldPos       = texelFetch(tex_localpos, texelPos, 0).xyz + cameraPosition;
 
     prevIllum   = vec4(0,0,0,0);
     prevMoments = vec2(0,0);
@@ -56,13 +56,13 @@ bool loadPrevData(out vec4 prevIllum, out vec2 prevMoments, out float historyLen
     bool valid = false;
 
     // vec4  rawPrevGBufferData = texelFetch(tex_gbuffer_history, prevTexelPos, 0);
-    // vec4  prevWorldPos       = texelFetch(tex_worldpos_history, prevTexelPos, 0);
+    // vec4  prevWorldPos       = texelFetch(tex_localpos_history, prevTexelPos, 0);
     // valid = isReprojValid(prevTexCoord, rawCurrGBufferData, currWorldPos, rawPrevGBufferData, prevWorldPos);
 
     for (int sampleIdx = 0; sampleIdx < 4; sampleIdx++) {
         ivec2 loc = prevTexelPos + tapOffset[sampleIdx];
         vec4  rawPrevGBufferData = texelFetch(tex_gbuffer_history, loc, 0);
-        vec4  prevWorldPos       = texelFetch(tex_worldpos_history, loc, 0);
+        vec3  prevWorldPos       = texelFetch(tex_localpos_history, loc, 0).xyz + previousCameraPosition;
 
         tapValid[sampleIdx] = isReprojValid(prevTexCoord, rawCurrGBufferData, currWorldPos, rawPrevGBufferData, prevWorldPos);
         valid = valid || tapValid[sampleIdx];
@@ -106,7 +106,7 @@ bool loadPrevData(out vec4 prevIllum, out vec2 prevMoments, out float historyLen
             for (int xx = -radius; xx <= radius; xx++) {
                 ivec2 p = prevTexelPos + ivec2(xx, yy);
                 vec4  rawPrevGBufferData = texelFetch(tex_gbuffer_history, p, 0);
-                vec4  prevWorldPos       = texelFetch(tex_worldpos_history, p, 0);
+                vec3  prevWorldPos       = texelFetch(tex_localpos_history, p, 0).xyz + previousCameraPosition;
 
                 if (isReprojValid(prevTexCoord, rawCurrGBufferData, currWorldPos, rawPrevGBufferData, prevWorldPos)) {
                     prevIllum   += texelFetch(tex_diffuse_direct_history, p, 0);

@@ -69,7 +69,7 @@ virtualSourceFiles = {
     f"{sourcedir}/gbuffers_terrain": "main",
     f"{sourcedir}/gbuffers_damagedblock": "main",
     f"{sourcedir}/gbuffers_block": "main",
-    f"{sourcedir}/gbuffers_hand": "main",
+    f"{sourcedir}/gbuffers_hand": "discard",
     f"{sourcedir}/gbuffers_water": "discard",
     f"{sourcedir}/gbuffers_handheldwater": "discard",
 }
@@ -230,7 +230,8 @@ def safeOpen(path, *args, **kwargs):
 def dumpAssets(filter):
     for asset in assets:
         if filter(asset):
-            target = f"{outputdir}/shaders/{asset[len(sourcedir):]}"
+            target = f"{outputdir}/shaders/{asset[len(sourcedir)+1:]}"
+            print(f"正在写入 {target}")
             with open(asset, "rb") as f:
                 with safeOpen(target, "wb") as g:
                     g.write(f.read())

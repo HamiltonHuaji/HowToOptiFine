@@ -4,7 +4,7 @@
 #define MAX_LIGHT_BOUNCE 3 // [1 2 3 4 5]
 
 // sample per pixel
-#define SAMPLE_PER_PIXEL 8 // [1 2 4 8 16 32 64]
+#define SAMPLE_PER_PIXEL 1 // [1 2 4 8 16 32 64]
 
 // 单条光线步进的最大长度
 #define MAX_RAY_LENGTH 24
@@ -17,12 +17,12 @@
 #define ALPHA_MOMENTS 0.2
 
 // A-trous 滤波次数
-#define ATROUS_FILTER_PASS 5 // [0 1 2 3 4 5]
+#define ATROUS_FILTER_PASS 6 // [0 1 2 3 4 5 6]
 
 // 混合模式
-// 0: 仅显示直接光照
-// 1: (直接光照 + 间接光照)
-// 2: (直接光照 + 间接光照) * 漫反射
+// 0: 仅漫反射色
+// 1: 仅光照
+// 2: 光照 * 漫反射色
 // 3: 色阶映射
 #define COMPOSITE_OPTION 2 // [0 1 2 3]
 
@@ -36,7 +36,7 @@
 // SVGF 参数
 #define SIGMA_Z 1 // [0 1 2 4 8 16]
 #define SIGMA_N 128 // [16 32 64 128 256 512]
-#define SIGMA_L 10 // [1 2 4 6 8 10 12 16 32]
+#define SIGMA_L 32 // [1 2 4 6 8 10 12 16 32 64]
 
 // A-trous 滤波器核
 const float atrousKernel[3] = { 1.0, 2.0 / 3.0, 1.0 / 6.0 };

@@ -27,6 +27,13 @@ float luminance(vec3 c) {
 }
 float saturate(float x) { return clamp(x, 0.0, 1.0); }
 
+vec3 KelvinToRGB(float k) {
+    const vec3 c = pow(vec3(0.1, 0.4, 0.98), vec3(0.9));
+    float x = k - 6500.0;
+    float xc = pow(abs(x), 1.1) * sign(x);
+    return (exp(xc * 0.00045f * c) / exp(xc * 0.00017)) * 0.5f;
+}
+
 const float pi = 3.1415926535897932;
 // vec3 direction = TBN * uniform2dToHemisphere(some_random_uniform2d)
 vec3 uniform2dToHemisphere(vec2 r) {

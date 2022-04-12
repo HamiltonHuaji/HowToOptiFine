@@ -14,7 +14,7 @@ out vec2      texCoord;     // 纹理坐标
 out vec3      color;        // 顶点色
 out vec3      normal;       // 面法线(世界坐标)
 out vec3      tangent;      // 面切线(世界坐标)
-out vec3      worldPos;     // 世界坐标
+out vec3      localPos;     // 世界坐标减摄像机位置
 out vec3      motionVector; // 运动向量
 
 void main() {
@@ -23,6 +23,6 @@ void main() {
     color       = gl_Color.rgb;
     normal      = normalize(mat3(gbufferModelViewInverse) * gl_NormalMatrix * gl_Normal);
     tangent     = at_tangent.xyz;
-    worldPos    = (gbufferModelViewInverse * gl_ModelViewMatrix * gl_Vertex).xyz + cameraPosition.xyz;
+    localPos    = (gbufferModelViewInverse * gl_ModelViewMatrix * gl_Vertex).xyz;
     gl_Position = gbufferProjection * gl_ModelViewMatrix * gl_Vertex;
 }

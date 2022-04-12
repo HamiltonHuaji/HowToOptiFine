@@ -1,7 +1,8 @@
 #include "inc/glsl.hpp"
 
 layout(triangles) in;
-layout(points, max_vertices = 1) out;
+layout(triangle_strip, max_vertices = 8) out;
+// layout(points, max_vertices = 1) out;
 
 flat in uint blockID[];     // 方块类型
 flat in int  renderMode[];  // 是否写入 shadowmap 从而影响全局光照
@@ -16,8 +17,24 @@ flat out vec4 data;
 #include "inc/constants.hpp"
 #include "inc/utils.hpp"
 #include "inc/voxelspace.hpp"
+#include "inc/uniforms.hpp"
 
 void main() {
+    // RSM
+    for (int i=0; i<3; i++) {
+        vec4 vertex = gl_in[i].gl_Position;
+        vertex /= vertex.w;
+        if (abs(vertex.x) >= 1) {
+            return;
+        }
+        if (abs(vertex.y) >= 1) {
+            return;
+        }
+        gl_Position = vec4(vertex.x * .5f + .5f, vertex.y * .5f + .5f, vertex.z, 1.f);
+        data = vec4(KelvinToRGB(sunTemperature), 1.f);
+        EmitVertex();
+    }
+    EndPrimitive();
     /*
      * 每个四边形包含两个三角形. 绘制其中的一个即可
      *
@@ -47,7 +64,14 @@ void main() {
 
         ivec2 texelPos = getTexelPosFromVoxelPos(centerBlockPos);
         data           = vd.rawData;
+
         gl_Position    = shadow_getGLPositionFromTexelPos(texelPos, .5f);
+        EmitVertex();
+        gl_Position    = shadow_getGLPositionFromTexelPos(texelPos + ivec2(1, 0), .5f);
+        EmitVertex();
+        gl_Position    = shadow_getGLPositionFromTexelPos(texelPos + ivec2(0, 1), .5f);
+        EmitVertex();
+        gl_Position    = shadow_getGLPositionFromTexelPos(texelPos + ivec2(1, 1), .5f);
         EmitVertex();
         EndPrimitive();
     }

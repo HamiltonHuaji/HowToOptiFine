@@ -11,9 +11,9 @@
 
 #define tex_gbuffer_depth               depthtex0
 #define tex_gbuffer                     colortex0
-#define tex_worldpos                    colortex1
+#define tex_localpos                    colortex1
 #define tex_gbuffer_history             colortex2
-#define tex_worldpos_history            colortex3
+#define tex_localpos_history            colortex3
 #define tex_motion_vector               colortex4
 #define tex_moments_history             colortex5
 #define tex_diffuse_direct              colortex6
@@ -30,9 +30,11 @@ const bool colortex6Clear   = true;
 const bool colortex7Clear   = false;
 const bool colortex8Clear   = false;
 const bool colortex9Clear   = false;
-const bool shadowcolorClear = true;
+const bool shadowcolor0Clear = true;
+const bool shadowcolor1Clear = true;
 
-const vec4 shadowcolorClearColor = vec4(0, 0, 0, 0);
+const vec4 shadowcolor0ClearColor = vec4(0, 0, 0, 0);
+const vec4 shadowcolor1ClearColor = vec4(0, 0, 0, 0);
 
 #ifndef RGBA32F
 #define RGBA32F 0
@@ -40,16 +42,20 @@ const vec4 shadowcolorClearColor = vec4(0, 0, 0, 0);
 #ifndef RGBA32U
 #define RGBA32U 0
 #endif
+#ifndef RGBA16F
+#define RGBA16F 0
+#endif
 
 const int shadowcolor0Format = RGBA32F;
+const int shadowcolor1Format = RGBA32F;
 const int colortex0Format    = RGBA32F;
-const int colortex1Format    = RGBA32F;
+const int colortex1Format    = RGBA16F;
 const int colortex2Format    = RGBA32F;
-const int colortex3Format    = RGBA32F;
+const int colortex3Format    = RGBA16F;
 const int colortex4Format    = RGBA32F;
 const int colortex5Format    = RGBA32F;
-const int colortex6Format    = RGBA32F;
-const int colortex7Format    = RGBA32F;
+const int colortex6Format    = RGBA16F;
+const int colortex7Format    = RGBA16F;
 const int colortex8Format    = RGBA32F;
 const int colortex9Format    = RGBA32F;
 const int colortex13Format    = RGBA32F;

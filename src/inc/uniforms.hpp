@@ -31,6 +31,7 @@ uniform float frameTime;
 uniform int   frameCounter;
 uniform float sunAngle;
 uniform vec3  skyColor;
+uniform float sunTemperature;
 
 uniform int   isEyeInWater;
 uniform ivec2 eyeBrightness;

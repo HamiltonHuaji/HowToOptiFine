@@ -14,9 +14,10 @@ flat out vec2 spriteSize;  // 占用 texture 的尺寸
 flat out vec3 color;       // 顶点颜色(乘在 texture 纹理采样结果上), 对于同一个方块是一样的(用于表示不同群系下的草方块等)
 flat out vec3 normal;      // 法线(世界坐标)
 flat out vec3 localPos;    // 局部坐标, 即世界坐标减去摄像机位置
+out vec2      texCoord;    // 纹理坐标
 
 void main() {
-    blockID    = getBlockID(mc_Entity);
+    blockID = getBlockID(mc_Entity);
     if (isCube(blockID) || isFacingCube(blockID)) {
         renderMode = 0;
     } else {
@@ -26,13 +27,12 @@ void main() {
     midTexCoord = mc_midTexCoord;
 
     // 纹理坐标
-    vec2 texCoord = gl_MultiTexCoord0.st;
-    spriteSize    = abs(texCoord - mc_midTexCoord) * 2.f;
+    texCoord   = gl_MultiTexCoord0.st;
+    spriteSize = abs(texCoord - mc_midTexCoord) * 2.f;
 
     color    = gl_Color.rgb;
     normal   = normalize(mat3(shadowModelViewInverse) * gl_NormalMatrix * gl_Normal);
     localPos = (shadowModelViewInverse * gl_ModelViewMatrix * gl_Vertex).xyz;
 
-    // 无实义
-    gl_Position = ftransform();
+    gl_Position = shadowProjection * gl_ModelViewMatrix * gl_Vertex;
 }

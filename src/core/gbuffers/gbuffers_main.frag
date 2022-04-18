@@ -17,7 +17,7 @@ in vec3      motionVector; // 运动向量
 #include "inc/uniforms.hpp"
 #include "inc/utils.hpp"
 
-#pragma rendertargets(0, 1, 4)
+#pragma rendertargets(0, 1, 4, 15)
 void main() {
     GBufferData gd;
 
@@ -39,7 +39,7 @@ void main() {
     packGBufferData(gd);
     gl_FragData[0] = gd.rawData;
     gl_FragData[1] = vec4(localPos, 1.f);
-
+#ifndef GBUFFERS_ENTITIES
     vec4 projPosPrev = gbufferPreviousProjection * gbufferPreviousModelView * vec4(localPos + cameraPosition - previousCameraPosition, 1.f);
     projPosPrev /= projPosPrev.w;
     projPosPrev += 1.f;
@@ -47,4 +47,9 @@ void main() {
 
     vec3 curr = gl_FragCoord.xyz / vec3(viewWidth, viewHeight, 1.f);
     gl_FragData[2] = vec4(projPosPrev.xyz - curr, 0.f);
+#else
+    gl_FragData[2] = vec4(motionVector * .5f, 0.f);
+#endif
+    // gl_FragData[3] = vec4(motionVector, 0);
+    gl_FragData[3] = gl_FragData[2];
 }

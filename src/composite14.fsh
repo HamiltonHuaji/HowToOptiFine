@@ -1,16 +1,20 @@
-
 #include "inc/gbuffer.hpp"
 #include "inc/glsl.hpp"
 #include "inc/uniforms.hpp"
 #include "inc/blockmapping.hpp"
 #include "inc/buffers.hpp"
 #include "inc/constants.hpp"
+#include "inc/utils.hpp"
 vec2  texCoord = gl_FragCoord.xy / viewSize;
 ivec2 texelPos = ivec2(gl_FragCoord.xy);
 
 uniform sampler2D tex_gbuffer_depth;
 uniform sampler2D tex_gbuffer;
 uniform sampler2D tex_diffuse_direct;
+uniform sampler2D tex_shadowcolor;
+uniform sampler2D tex_shadowdepth;
+uniform sampler2D tex_localpos;
+#include "inc/shadowmap.hpp"
 
 vec3 aces(vec3 x) {
   const float a = 2.51;
@@ -29,6 +33,7 @@ void main() {
         gl_FragData[0] = gl_FragData[1] = vec4(.36078, .63137, .84706, 1.);
         return;
     }
+    vec3 localPos = texelFetch(tex_localpos, texelPos, 0).xyz;
 
     GBufferData gd;
     gd.rawData = texelFetch(tex_gbuffer, texelPos, 0);
@@ -41,9 +46,10 @@ void main() {
 #elif   (COMPOSITE_OPTION==1)
         gl_FragData[0].rgb = texelFetch(tex_diffuse_direct, texelPos, 0).rgb;
 #elif   (COMPOSITE_OPTION==2)
-        gl_FragData[0].rgb = gd.diffuse * texelFetch(tex_diffuse_direct, texelPos, 0).rgb;
+        gl_FragData[0].rgb = gd.diffuse * (texelFetch(tex_diffuse_direct, texelPos, 0).rgb + shadowColor(localPos, gd.normal));
 #elif   (COMPOSITE_OPTION==3)
-        gl_FragData[0].rgb = aces(gd.diffuse * texelFetch(tex_diffuse_direct, texelPos, 0).rgb);
+        // gl_FragData[0].rgb = aces(gd.diffuse * texelFetch(tex_diffuse_direct, texelPos, 0).rgb);
+        gl_FragData[0].rgb = shadowColor(localPos, gd.normal);
 #endif
     }
 

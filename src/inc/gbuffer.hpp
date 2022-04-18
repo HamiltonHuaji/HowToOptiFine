@@ -30,6 +30,9 @@ struct GBufferData {
 vec3 gBufferNormal(vec4 rawData) {
     return unpackSnorm4x8(floatBitsToUint(rawData).y).xyz;
 }
+uint gBufferBlockID(vec4 rawData) {
+    return uint(unpackUnorm2x16(floatBitsToUint(rawData).w).x * 65535);
+}
 
 void packGBufferData(inout GBufferData gd) {
     uint a          = packUnorm4x8(vec4(gd.diffuse, gd.smoothness));

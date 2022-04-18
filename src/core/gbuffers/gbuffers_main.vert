@@ -5,6 +5,10 @@ attribute vec4 at_tangent;
 attribute vec3 mc_Entity;
 attribute vec2 mc_midTexCoord;
 
+#ifdef GBUFFERS_ENTITIES
+attribute vec3 at_velocity;
+#endif
+
 #include "inc/constants.hpp"
 #include "inc/uniforms.hpp"
 #include "inc/utils.hpp"
@@ -24,5 +28,10 @@ void main() {
     normal      = normalize(mat3(gbufferModelViewInverse) * gl_NormalMatrix * gl_Normal);
     tangent     = at_tangent.xyz;
     localPos    = (gbufferModelViewInverse * gl_ModelViewMatrix * gl_Vertex).xyz;
+#ifdef GBUFFERS_ENTITIES
+    motionVector = at_velocity;
+#else
+    motionVector = vec3(0);
+#endif
     gl_Position = gbufferProjection * gl_ModelViewMatrix * gl_Vertex;
 }

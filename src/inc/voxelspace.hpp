@@ -17,6 +17,9 @@ ivec2 getTexelPosFromVoxelPos(ivec3 voxelPos) {
 vec3 getVoxelPosFromLocalPos(vec3 localPos) {
     return localPos + cameraPosition.xyz - floor(cameraPosition.xyz) * vec3(1, 0, 1);
 }
+vec3 getLocalPosFromVoxelPos(vec3 voxelPos) {
+    return voxelPos - cameraPosition.xyz + floor(cameraPosition.xyz) * vec3(1, 0, 1);
+}
 ivec3 getBlockPosFromLocalPos(vec3 localPos) {
     return ivec3(floor(getVoxelPosFromLocalPos(localPos)));
 }

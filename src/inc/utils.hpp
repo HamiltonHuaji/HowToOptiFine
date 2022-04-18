@@ -27,40 +27,52 @@ float luminance(vec3 c) {
 }
 float saturate(float x) { return clamp(x, 0.0, 1.0); }
 
+void getNearFarFromProjectionMatrix(mat4 proj, out float near, out float far) {
+    float m22 = -proj[2][2];
+    float m32 = -proj[3][2];
+    far       = m32 / (m22 - 1);
+    near      = m32 / (1 + m22);
+}
+
+float linearDepth(float near, float far, float depth) {
+    float z = depth * 2.0 - 1.0;
+    return (2.0 * near * far) / (far + near - z * (far - near));
+}
+
 vec3 KelvinToRGB(float k) {
-    const vec3 c = pow(vec3(0.1, 0.4, 0.98), vec3(0.9));
-    float x = k - 6500.0;
-    float xc = pow(abs(x), 1.1) * sign(x);
+    const vec3 c  = pow(vec3(0.1, 0.4, 0.98), vec3(0.9));
+    float      x  = k - 6500.0;
+    float      xc = pow(abs(x), 1.1) * sign(x);
     return (exp(xc * 0.00045f * c) / exp(xc * 0.00017)) * 0.5f;
 }
 
 const float pi = 3.1415926535897932;
 // vec3 direction = TBN * uniform2dToHemisphere(some_random_uniform2d)
 vec3 uniform2dToHemisphere(vec2 r) {
-    float phi  = r.x * pi * 2;
-    float cphi = cos(phi);
-    float sphi = sin(phi);
+    float phi    = r.x * pi * 2;
+    float cphi   = cos(phi);
+    float sphi   = sin(phi);
     float ctheta = r.y;
     float stheta = sqrt(1 - r.y * r.y);
     return vec3(stheta * cphi, stheta * sphi, ctheta);
 }
 
-const int maxTexCoord = 1<<12;
-const int texCoordClamp = 1<<24;
+const int maxTexCoord   = 1 << 12;
+const int texCoordClamp = 1 << 24;
 
 // 打包 texel 坐标(ivec2) 到单个 float32 中
 // 最大支持 4k 分辨率的贴图
 float packTexelPos(ivec2 texelPos) {
     ivec2 iflatten = texelPos * ivec2(1, maxTexCoord);
     float fflatten = iflatten.x + iflatten.y;
-    float result = texCoordClamp - fflatten;
+    float result   = texCoordClamp - fflatten;
     return result / texCoordClamp;
 }
 
 // 解包 texel 坐标(ivec2)
 // 最大支持 4k 分辨率的贴图
 ivec2 unpackTexelPos(float packedTexelPos) {
-    float result = packedTexelPos * texCoordClamp;
+    float result   = packedTexelPos * texCoordClamp;
     float fflatten = texCoordClamp - result;
     return ivec2(mod(fflatten, maxTexCoord), floor(fflatten / maxTexCoord));
 }
@@ -69,7 +81,7 @@ ivec2 unpackTexelPos(float packedTexelPos) {
 vec2 getTexCoordFromTexelPos(ivec2 targetResolution, ivec2 texelPos) {
     return (vec2(texelPos) + .5f) / vec2(targetResolution);
 }
-// texCoord 转 texel 坐标 
+// texCoord 转 texel 坐标
 ivec2 getTexelPosFromTexCoord(ivec2 targetResolution, vec2 texCoord) {
     return ivec2(texCoord * vec2(targetResolution));
 }
@@ -88,3 +100,9 @@ vec2 shadow_getTexCoordFromTexelPos(ivec2 texelPos) {
 vec4 shadow_getGLPositionFromTexelPos(ivec2 texelPos, float depth) {
     return vec4(shadow_getTexCoordFromTexelPos(texelPos) * 2.f - 1.f, depth, 1.f);
 }
+
+vec2 FRR2HRR(vec2 texCoord) { return texCoord; }
+vec2 HRR2FRR(vec2 texCoord) { return texCoord; }
+
+ivec2 FRR2HRR(ivec2 texelPos) { return texelPos / HRR_SCALE; }
+ivec2 HRR2FRR(ivec2 texelPos) { return texelPos * HRR_SCALE; }

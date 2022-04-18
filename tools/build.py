@@ -37,6 +37,10 @@ sourceTemplates = {
         ".vsh": '#include "core/gbuffers/gbuffers_main.vert"',
         ".fsh": '#include "core/gbuffers/gbuffers_main.frag"'
     },
+    "entity": {
+        ".vsh": '#define GBUFFERS_ENTITIES\n#include "core/gbuffers/gbuffers_main.vert"',
+        ".fsh": '#define GBUFFERS_ENTITIES\n#include "core/gbuffers/gbuffers_main.frag"'
+    },
     "discard": {
         ".vsh": '#include "core/gbuffers/gbuffers_discard.vert"',
         ".fsh": '#include "core/gbuffers/gbuffers_discard.frag"'
@@ -45,6 +49,9 @@ sourceTemplates = {
         ".vsh": '#include "core/shadow/shadow.vert"',
         ".gsh": '#include "core/shadow/shadow.geom"',
         ".fsh": '#include "core/shadow/shadow.frag"',
+    },
+    "HRR": {
+        ".vsh": '#include "core/HRR.vert"'
     }
 }
 virtualSourceFiles = {
@@ -57,13 +64,12 @@ virtualSourceFiles = {
     f"{sourcedir}/gbuffers_damagedblock": "discard",
     f"{sourcedir}/gbuffers_block": "discard",
     f"{sourcedir}/gbuffers_beaconbeam": "discard",
-    f"{sourcedir}/gbuffers_entities": "discard",
-    f"{sourcedir}/gbuffers_entities_glowing": "discard",
+    f"{sourcedir}/gbuffers_entities": "entity",
+    f"{sourcedir}/gbuffers_entities_glowing": "entity",
     f"{sourcedir}/gbuffers_armor_glint": "discard",
     f"{sourcedir}/gbuffers_spidereyes": "discard",
     f"{sourcedir}/gbuffers_weather": "discard",
     f"{sourcedir}/gbuffers_item": "main",
-    f"{sourcedir}/gbuffers_line": "discard",
     f"{sourcedir}/gbuffers_textured": "main",
     f"{sourcedir}/gbuffers_textured_lit": "main",
     f"{sourcedir}/gbuffers_terrain": "main",
@@ -71,7 +77,16 @@ virtualSourceFiles = {
     f"{sourcedir}/gbuffers_block": "main",
     f"{sourcedir}/gbuffers_hand": "discard",
     f"{sourcedir}/gbuffers_water": "discard",
-    f"{sourcedir}/gbuffers_handheldwater": "discard",
+    # f"{sourcedir}/deferred": "HRR",
+    # f"{sourcedir}/composite2": "HRR",
+    # f"{sourcedir}/composite3": "HRR",
+    # f"{sourcedir}/composite4": "HRR",
+    # f"{sourcedir}/composite5": "HRR",
+    # f"{sourcedir}/composite6": "HRR",
+    # f"{sourcedir}/composite7": "HRR",
+    # f"{sourcedir}/composite8": "HRR",
+    # f"{sourcedir}/composite9": "HRR",
+    # f"{sourcedir}/composite10": "HRR",
 }
 
 

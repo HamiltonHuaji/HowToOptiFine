@@ -1,8 +1,8 @@
-
 #include "inc/gbuffer.hpp"
 #include "inc/glsl.hpp"
 #include "inc/uniforms.hpp"
 #include "inc/blockmapping.hpp"
+#include "inc/constants.hpp"
 #include "inc/buffers.hpp"
 vec2  texCoord = gl_FragCoord.xy / viewSize;
 ivec2 texelPos = ivec2(gl_FragCoord.xy);
@@ -32,7 +32,7 @@ void main() {
     vec3 binormal = normalize(cross(gd.tangent, gd.normal));
     mat3 tbn      = mat3(gd.tangent, binormal, gd.normal);
 
-    vec3 localPos = texture(tex_localpos, texCoord).xyz;
+    vec3 localPos = texelFetch(tex_localpos, texelPos, 0).xyz;
     // vec3 primaryRayEndVoxelPos = getVoxelPosFromLocalPos(localPos - cameraPosition);
     vec3 primaryRayEndVoxelPos = getVoxelPosFromLocalPos(localPos);
 

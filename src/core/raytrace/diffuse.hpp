@@ -4,6 +4,7 @@
 
 #include "inc/random.hpp"
 #include "inc/voxelmarch.hpp"
+#include "inc/shadowmap.hpp"
 
 // voxelPos: primary ray 与场景的交点, 这个交点利用光栅化管线可以简单得到(即采样世界坐标系贴图, 或根据深度图直接算)
 // tbn: TBN矩阵, 即由 tangent, binormal, normal 三个正交向量拼出的正交阵
@@ -44,6 +45,7 @@ vec4 raytrace_diffuse(vec3 voxelPos, mat3 tbn, uvec4 seed) {
                     r.dir = generateDummyTBN(itd.normal) * stbnSampler(seed.xy + uvec2(Martin_Roberts_R2(bounce-1)*128.0f), seed.z);
                     // r.dir = generateDummyTBN(itd.normal) * uniform2dToHemisphere(random2d(seed + uvec4(0, 0, 0, bounce)));
                     r.product *= itd.diffuse * lightDropdown(itd.t) * dot(r.dir, itd.normal);
+                    illuminance += r.product * vec4(shadowColor(getLocalPosFromVoxelPos(r.ori), itd.normal), 1.f);
                     // 应在此时考虑材质被日光的照亮程度, 为 illuminance 加上 r.product * RSM(r.ori)
                 }
             } else {

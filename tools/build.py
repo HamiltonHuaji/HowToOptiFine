@@ -50,12 +50,22 @@ sourceTemplates = {
         ".gsh": '#include "core/shadow/shadow.geom"',
         ".fsh": '#include "core/shadow/shadow.frag"',
     },
-    "HRR": {
-        ".vsh": '#include "core/HRR.vert"'
+    "shadowblur_y": {
+        ".vsh": '#include "core/shadow/shadowcomp1.vert"',
+        ".fsh": '#include "core/shadow/shadowcomp1.frag"',
+    },
+    "shadowblur_x": {
+        ".vsh": '#include "core/shadow/shadowcomp2.vert"',
+        ".fsh": '#include "core/shadow/shadowcomp2.frag"',
+    },
+    "full_screen": {
+        ".vsh": '#include "core/full_screen.vert"'
     }
 }
 virtualSourceFiles = {
     f"{sourcedir}/shadow": "shadow",
+    f"{sourcedir}/shadowcomp1": "shadowblur_y",
+    f"{sourcedir}/shadowcomp2": "shadowblur_x",
     f"{sourcedir}/gbuffers_basic": "main",
     f"{sourcedir}/gbuffers_skybasic": "discard",
     f"{sourcedir}/gbuffers_skytextured": "discard",
@@ -77,16 +87,19 @@ virtualSourceFiles = {
     f"{sourcedir}/gbuffers_block": "main",
     f"{sourcedir}/gbuffers_hand": "discard",
     f"{sourcedir}/gbuffers_water": "discard",
-    # f"{sourcedir}/deferred": "HRR",
-    # f"{sourcedir}/composite2": "HRR",
-    # f"{sourcedir}/composite3": "HRR",
-    # f"{sourcedir}/composite4": "HRR",
-    # f"{sourcedir}/composite5": "HRR",
-    # f"{sourcedir}/composite6": "HRR",
-    # f"{sourcedir}/composite7": "HRR",
-    # f"{sourcedir}/composite8": "HRR",
-    # f"{sourcedir}/composite9": "HRR",
-    # f"{sourcedir}/composite10": "HRR",
+    f"{sourcedir}/deferred": "full_screen",
+    f"{sourcedir}/composite2": "full_screen",
+    f"{sourcedir}/composite3": "full_screen",
+    f"{sourcedir}/composite4": "full_screen",
+    f"{sourcedir}/composite5": "full_screen",
+    f"{sourcedir}/composite6": "full_screen",
+    f"{sourcedir}/composite7": "full_screen",
+    f"{sourcedir}/composite8": "full_screen",
+    f"{sourcedir}/composite9": "full_screen",
+    f"{sourcedir}/composite10": "full_screen",
+    f"{sourcedir}/composite14": "full_screen",
+    f"{sourcedir}/composite15": "full_screen",
+    f"{sourcedir}/final": "full_screen",
 }
 
 

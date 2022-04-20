@@ -2,7 +2,6 @@
 
 #include "inc/buffers.hpp"
 #include "inc/constants.hpp"
-#include "inc/uniforms.hpp"
 #include "inc/utils.hpp"
 
 vec3 shadowSpacePosition(vec3 localPos) {
@@ -11,21 +10,20 @@ vec3 shadowSpacePosition(vec3 localPos) {
     return shadowPosition.xyz;
 }
 
-// ESM
+// VSM
 // 用法: shadowColor(localPos) * diffuseColor
 vec3 shadowColor(vec3 localPos, vec3 worldNormal) {
-    vec3 lightDir = normalize(shadowLightPosition);
-    if (dot(lightDir, upPosition) < 0) {
-        lightDir = -lightDir;
+    vec3 shadowLightDirection = normalize(shadowModelViewInverse[2].xyz);
+    if (dot(shadowLightDirection, worldNormal) <= 1e-6) {
+        return vec3(0);
     }
-
     vec3  shadowPosition = shadowSpacePosition(localPos);
     float dist           = length(shadowPosition.xy);
     float distortFactor  = (1.0 - SHADOW_MAP_BIAS) + dist * SHADOW_MAP_BIAS;
     shadowPosition.xy /= distortFactor;
     if (abs(shadowPosition.x) >= 1 || abs(shadowPosition.y) >= 1) {
         // 阴影贴图以外
-        return KelvinToRGB(sunTemperature) * sunIntensity * max(0.1f, -dot(worldNormal, lightDir));
+        return KelvinToRGB(sunTemperature) * sunIntensity;
     }
     // 阴影贴图的右上角
     vec2 shadowCoord = shadowPosition.xy * .25f + .75f;
@@ -45,17 +43,19 @@ vec3 shadowColor(vec3 localPos, vec3 worldNormal) {
     float z  = shadowData.r;
     float z2 = shadowData.g;
     if (z > .999f) {
-        return KelvinToRGB(sunTemperature) * sunIntensity * max(0.1f, -dot(worldNormal, lightDir));
+        return KelvinToRGB(sunTemperature) * sunIntensity;
     }
     float d = shadowPosition.z * .5 + .5;
 
-    float f = 1;
-    if (d >= z + .00001) {
+    float f = 0;
+    if (d <= z - .00001) {
+        f = 1;
+    } else {
         float sigma2 = z2 - z * z + 1e-6;
         float t      = d - z;
         float p_max  = sigma2 / (sigma2 + t * t);
-        f            = max(saturate(p_max), 0);
+        f            = saturate(p_max);
     }
 
-    return f * KelvinToRGB(sunTemperature) * sunIntensity * max(0.1f, dot(worldNormal, lightDir));
+    return f * KelvinToRGB(sunTemperature) * sunIntensity;
 }

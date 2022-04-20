@@ -16,6 +16,10 @@ in vec3      motionVector; // 运动向量
 #include "inc/gbuffer.hpp"
 #include "inc/uniforms.hpp"
 #include "inc/utils.hpp"
+out vec4 outColor0;
+out vec4 outColor1;
+out vec4 outColor2;
+out vec4 outColor3;
 
 #pragma rendertargets(0, 1, 4, 15)
 void main() {
@@ -37,19 +41,19 @@ void main() {
     gd.emissivity = spec.a; // LabPBR
     gd.tangent    = tangent;
     packGBufferData(gd);
-    gl_FragData[0] = gd.rawData;
-    gl_FragData[1] = vec4(localPos, 1.f);
+    outColor0 = gd.rawData;
+    outColor1 = vec4(localPos, 1.f);
 #ifndef GBUFFERS_ENTITIES
     vec4 projPosPrev = gbufferPreviousProjection * gbufferPreviousModelView * vec4(localPos + cameraPosition - previousCameraPosition, 1.f);
     projPosPrev /= projPosPrev.w;
     projPosPrev += 1.f;
     projPosPrev /= 2.f;
 
-    vec3 curr = gl_FragCoord.xyz / vec3(viewWidth, viewHeight, 1.f);
-    gl_FragData[2] = vec4(projPosPrev.xyz - curr, 0.f);
+    vec3 curr = gl_FragCoord.xyz / vec3(viewSize, 1.f);
+    outColor2 = vec4(projPosPrev.xyz - curr, 0.f);
 #else
-    gl_FragData[2] = vec4(motionVector * .5f, 0.f);
+    outColor2 = vec4(motionVector * .5f, 0.f);
 #endif
-    // gl_FragData[3] = vec4(motionVector, 0);
-    gl_FragData[3] = gl_FragData[2];
+    // outColor3 = vec4(motionVector, 0);
+    outColor3 = outColor2;
 }

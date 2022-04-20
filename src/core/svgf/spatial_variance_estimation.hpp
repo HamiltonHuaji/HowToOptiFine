@@ -31,6 +31,8 @@ float computeWeight(
     return weightIllum;
 }
 
+out vec4 outColor0;
+
 // 对于历史少于 4 的像素计算其空间的矩
 #pragma rendertargets(6)
 void main() {
@@ -50,7 +52,7 @@ void main() {
         float q_gradz = max(abs(dFdx(depthCenter)), abs(dFdy(depthCenter)));
         if (depthCenter == 1) {
             // current pixel does not a valid depth => must be envmap => do nothing
-            gl_FragData[0] = illuminationCenter;
+            outColor0 = illuminationCenter;
             return;
         }
         vec3  normalCenter     = gBufferNormal(texelFetch(tex_gbuffer, texelPos, 0));
@@ -104,5 +106,5 @@ void main() {
         // do nothing, pass data unmodified
         outColor = texelFetch(tex_diffuse_direct, texelPos, 0);
     }
-    gl_FragData[0] = outColor;
+    outColor0 = outColor;
 }

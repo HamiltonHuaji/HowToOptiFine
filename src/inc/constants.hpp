@@ -24,7 +24,7 @@
 // 1: 仅光照
 // 2: 光照 * 漫反射色
 // 3: 色阶映射
-#define COMPOSITE_OPTION 3 // [0 1 2 3]
+#define COMPOSITE_OPTION 2 // [0 1 2 3]
 
 // Gamma 校正值
 #define GAMMA 1.8 // [0.5 1.0 1.5 1.6 1.7 1.8 1.9 2.0 2.1 2.2 2.3 2.4 2.5 3.0 3.5 4.0]
@@ -51,24 +51,9 @@ const int shadowMapResolution = 8192;
 // 可投下阴影的物体的最大距离
 const float shadowDistance = 128;
 
-#define SHADOW_MAP_BIAS 0.9 // [0.0 0.6 0.8 0.9 0.95 0.99]
+#define SHADOW_MAP_BIAS 0.0 // [0.0 0.6 0.8 0.9 0.95 0.99]
 
 #define moment1 r
 #define moment2 g
 #define moments rg
 #define history_length b
-
-#define HRR 0 // [0 1]
-#if (HRR==1)
-#define HRR_SCALE 2
-#else
-#define HRR_SCALE 1
-#endif
-/*
-HRR约定:
-texCoord/texelPos均不变
-
-HRR pass 采样 FRR 贴图时, texCoord 和 texelPos 均乘 2
-HRR pass 采样 HRR 贴图时, texCoord 和 texelPos 均不变
-FRR pass 采样 HRR 贴图时, texCoord 和 texelPos 均除以 2
-*/

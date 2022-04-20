@@ -100,9 +100,3 @@ vec2 shadow_getTexCoordFromTexelPos(ivec2 texelPos) {
 vec4 shadow_getGLPositionFromTexelPos(ivec2 texelPos, float depth) {
     return vec4(shadow_getTexCoordFromTexelPos(texelPos) * 2.f - 1.f, depth, 1.f);
 }
-
-vec2 FRR2HRR(vec2 texCoord) { return texCoord; }
-vec2 HRR2FRR(vec2 texCoord) { return texCoord; }
-
-ivec2 FRR2HRR(ivec2 texelPos) { return texelPos / HRR_SCALE; }
-ivec2 HRR2FRR(ivec2 texelPos) { return texelPos * HRR_SCALE; }

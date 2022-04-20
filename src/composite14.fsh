@@ -24,13 +24,14 @@ vec3 aces(vec3 x) {
   const float e = 0.14;
   return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.f, 1.f);
 }
+out vec4 outColor0;
 
 #pragma rendertargets(6)
 void main() {
 
     float depth = texelFetch(tex_gbuffer_depth, texelPos, 0).r;
     if (depth >= 1.0) {
-        gl_FragData[0] = gl_FragData[1] = vec4(.36078, .63137, .84706, 1.);
+        outColor0 = vec4(.36078, .63137, .84706, 1.);
         return;
     }
     vec3 localPos = texelFetch(tex_localpos, texelPos, 0).xyz;
@@ -39,22 +40,19 @@ void main() {
     gd.rawData = texelFetch(tex_gbuffer, texelPos, 0);
     unpackGBufferData(gd);
     if ((gd.emissivity > .0125) || isEmissive(gd.blockID)) {
-        gl_FragData[0].rgb = gd.diffuse;
+        outColor0.rgb = gd.diffuse;
     } else {
 #if     (COMPOSITE_OPTION==0)
-        gl_FragData[0].rgb = gd.diffuse;
+        outColor0.rgb = gd.diffuse;
 #elif   (COMPOSITE_OPTION==1)
-        gl_FragData[0].rgb = texelFetch(tex_diffuse_direct, texelPos, 0).rgb;
+        outColor0.rgb = texelFetch(tex_diffuse_direct, texelPos, 0).rgb;
 #elif   (COMPOSITE_OPTION==2)
-        gl_FragData[0].rgb = gd.diffuse * (texelFetch(tex_diffuse_direct, texelPos, 0).rgb + shadowColor(localPos, gd.normal));
+        outColor0.rgb = gd.diffuse * (texelFetch(tex_diffuse_direct, texelPos, 0).rgb + shadowColor(localPos, gd.normal));
 #elif   (COMPOSITE_OPTION==3)
-        // gl_FragData[0].rgb = aces(gd.diffuse * texelFetch(tex_diffuse_direct, texelPos, 0).rgb);
-        gl_FragData[0].rgb = shadowColor(localPos, gd.normal);
+        // outColor0.rgb = aces(gd.diffuse * texelFetch(tex_diffuse_direct, texelPos, 0).rgb);
+        outColor0.rgb = shadowColor(localPos, gd.normal);
 #endif
     }
-
-    // gl_FragData[1].rgb = vec3(gd.smoothness, gd.metalness, gd.emissivity);
-    
     // if (isCube(gd.blockID) && !isEmissive(gd.blockID)) { discard; }
     // if (isFence(gd.blockID) && (isWest(gd.blockID) || isNorth(gd.blockID))) { discard; }
     // if (isWallTorch(gd.blockID) && getFacing(gd.blockID)==facing_north) { discard; }

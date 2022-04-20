@@ -1,39 +1,32 @@
 #pragma once
 #include "inc/glsl.hpp"
 
-uniform mat4 gbufferProjection;
-uniform mat4 gbufferProjectionInverse;
-uniform mat4 gbufferModelView;
-uniform mat4 gbufferModelViewInverse;
-uniform mat4 shadowProjection;
-uniform mat4 shadowProjectionInverse;
-uniform mat4 shadowModelView;
-uniform mat4 shadowModelViewInverse;
-uniform mat4 gbufferPreviousModelView;
-uniform mat4 gbufferPreviousProjection;
+uniform float near;
+uniform float far;
+uniform vec2  viewSize;
+uniform mat4  gbufferProjection;
+uniform mat4  gbufferProjectionInverse;
+uniform mat4  gbufferModelView;
+uniform mat4  gbufferModelViewInverse;
+uniform mat4  shadowProjection;
+uniform mat4  shadowProjectionInverse;
+uniform mat4  shadowModelView;
+uniform mat4  shadowModelViewInverse;
+uniform mat4  gbufferPreviousModelView;
+uniform mat4  gbufferPreviousProjection;
+uniform vec3  cameraPosition;
+uniform vec3  previousCameraPosition;
 
 uniform vec3 sunPosition;
 uniform vec3 upPosition;
 
-uniform vec3 cameraPosition;
-uniform vec3 previousCameraPosition;
-
-uniform float near;
-uniform float far;
-uniform float viewWidth;
-uniform float viewHeight;
-uniform float rainStrength;
-uniform float wetness;
-uniform float aspectRatio;
-uniform int   worldTime;
-uniform float frameTimeCounter;
-uniform float frameTime;
-uniform int   frameCounter;
-uniform float sunAngle;
-uniform vec3  skyColor;
 uniform float sunTemperature;
 uniform float sunIntensity;
-uniform vec3  shadowLightPosition;
+uniform float sunAngle;
+uniform vec3  skyColor;
+
+uniform int worldTime;
+uniform int frameCounter;
 
 uniform int   isEyeInWater;
 uniform ivec2 eyeBrightness;
@@ -46,4 +39,3 @@ uniform int heldItemId;
 uniform int heldItemId2;
 
 uniform vec4 entityColor;
-uniform vec2 viewSize;

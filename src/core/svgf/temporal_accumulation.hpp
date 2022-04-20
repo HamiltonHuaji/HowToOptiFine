@@ -133,14 +133,18 @@ bool loadPrevData(out vec4 prevIllum, out vec2 prevMoments, out float historyLen
     return valid;
 }
 
+out vec4 outColor0;
+out vec4 outColor1;
+out vec4 outColor2;
+
 // TAA, 重投影光照部分; 不更新颜色历史, 只更新二阶矩的历史和有效历史长度
 #pragma rendertargets(5, 6, 14)
 void main() {
 
     float depth = texelFetch(tex_gbuffer_depth, texelPos, 0).r;
     if (depth >= 1.0) {
-        gl_FragData[0] = vec4(0, 0, 1, 0);
-        gl_FragData[1] = vec4(0, 0, 0, 0);
+        outColor0 = vec4(0, 0, 1, 0);
+        outColor1 = vec4(0, 0, 0, 0);
         return; // 天空
     }
 
@@ -172,7 +176,7 @@ void main() {
     // tex_moments_history.z: 有效历史长度
     vec4 outMomentsHistory = vec4(outMoments, historyLength, 1.f);
 
-    gl_FragData[0] = outMomentsHistory;
-    gl_FragData[1] = outIllumination;
-    gl_FragData[2] = vec4(outIllumination.rgb, 1.f);
+    outColor0 = outMomentsHistory;
+    outColor1 = outIllumination;
+    outColor2 = vec4(outIllumination.rgb, 1.f);
 }

@@ -21,6 +21,8 @@ vec2 viewSize = vec2(viewWidth, viewHeight);
 vec2 texCoord = gl_FragCoord.xy / viewSize;
 ivec2 texelPos = ivec2(gl_FragCoord.xy);
 
+out vec4 outColor0;
+
 void main() {
 #if (GAMMA_CORRECTION==0)
     vec4 finalColor = texture({{ background }}, texCoord);
@@ -31,16 +33,16 @@ void main() {
         finalColor = texture({{source}}, relative);
     }
     {{ /patch }}
-    gl_FragData[0] = vec4(pow(finalColor.rgb, vec3(1.f / GAMMA)), 1);
+    outColor0 = vec4(pow(finalColor.rgb, vec3(1.f / GAMMA)), 1);
 #else
     if (texCoord.x < .5) {
         if (((texelPos.x ^ texelPos.y) & 1) > 0) {
-            gl_FragData[0] = vec4(pow(vec3(0,0,0), vec3(1.f / GAMMA)), 1.f);
+            outColor0 = vec4(pow(vec3(0,0,0), vec3(1.f / GAMMA)), 1.f);
         } else {
-            gl_FragData[0] = vec4(pow(vec3(1,1,1), vec3(1.f / GAMMA)), 1.f);
+            outColor0 = vec4(pow(vec3(1,1,1), vec3(1.f / GAMMA)), 1.f);
         }
     } else {
-        gl_FragData[0] = vec4(pow(vec3(.5, .5, .5), vec3(1.f / GAMMA)), 1.f);
+        outColor0 = vec4(pow(vec3(.5, .5, .5), vec3(1.f / GAMMA)), 1.f);
     }
 #endif
 }
@@ -97,7 +99,7 @@ class Screen:
 
 screen = Screen(background="colortex6")
 
-# screen.add_targets(["colortex6", "colortex7"], maxwidth=.25)
+# screen.add_targets(["colortex6", "shadowcolor0"], maxwidth=.25)
 # screen.add_targets(["shadowcolor0", "colortex15"], maxwidth=.25)
 os.makedirs(os.path.dirname("shaders/final.fsh"), exist_ok=True)
 with open("shaders/final.fsh", "w") as f:

@@ -13,12 +13,13 @@ uniform sampler2D tex_localpos;
 
 #include "core/raytrace/diffuse.hpp"
 
+out vec4 outColor0;
+
 #pragma rendertargets(6)
 void main() {
-
     float depth = texelFetch(tex_gbuffer_depth, texelPos, 0).r;
     if (depth >= 1.0) {
-        gl_FragData[0] = gl_FragData[1] = vec4(.36078, .63137, .84706, 1.);
+        outColor0 = vec4(.36078, .63137, .84706, 1.);
         return;
     }
 
@@ -26,7 +27,7 @@ void main() {
     gd.rawData = texelFetch(tex_gbuffer, texelPos, 0);
     unpackGBufferData(gd);
     if ((gd.emissivity > .0125) || isEmissive(gd.blockID)) {
-        gl_FragData[0] = vec4(0);
+        outColor0 = vec4(0);
         return;
     }
     vec3 binormal = normalize(cross(gd.tangent, gd.normal));
@@ -40,11 +41,8 @@ void main() {
     for (int i = 0; i < SAMPLE_PER_PIXEL; i++) {
         illuminance += raytrace_diffuse(primaryRayEndVoxelPos, tbn, uvec4(texelPos, frameCounter, 0));
     }
-    gl_FragData[0] = illuminance / float(SAMPLE_PER_PIXEL);
+    outColor0 = illuminance / float(SAMPLE_PER_PIXEL);
 
-    // gl_FragData[0].rgb = gd.diffuse;
-    // gl_FragData[1].rgb = vec3(gd.smoothness, gd.metalness, gd.emissivity);
-    
     // if (isCube(gd.blockID) && !isEmissive(gd.blockID)) { discard; }
     // if (isFence(gd.blockID) && (isWest(gd.blockID) || isNorth(gd.blockID))) { discard; }
     // if (isWallTorch(gd.blockID) && getFacing(gd.blockID)==facing_north) { discard; }

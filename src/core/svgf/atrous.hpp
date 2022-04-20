@@ -45,6 +45,7 @@ float computeWeight(
 #ifndef LEVEL
 #define LEVEL 0
 #endif
+out vec4 outColor0;
 
 #pragma rendertargets(6)
 void main() {
@@ -58,7 +59,7 @@ void main() {
     }
     // if ((LEVEL >= ATROUS_FILTER_PASS) || (texCoord.x < .5f)){
     if (LEVEL >= ATROUS_FILTER_PASS){
-        gl_FragData[0] = illumination;
+        outColor0 = illumination;
         return;
     }
     float illuminationIllumCenter = luminance(illumination.rgb);
@@ -104,5 +105,5 @@ void main() {
         }
     }
     vec4 filteredIllumination = vec4(sumIllumination / vec4(vec3(sumWIllumination), sumWIllumination * sumWIllumination));
-    gl_FragData[0]            = filteredIllumination;
+    outColor0            = filteredIllumination;
 }

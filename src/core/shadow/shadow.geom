@@ -14,7 +14,7 @@ flat in vec3 localPos[];    // 局部坐标, 即世界坐标减去摄像机位�
 in vec2      texCoord[];    // 纹理坐标
 
 flat out vec4 data;
-flat out int  isESM;
+flat out int  isShadowMap;
 out vec2      ftexCoord; // 纹理坐标
 
 #include "inc/constants.hpp"
@@ -23,8 +23,7 @@ out vec2      ftexCoord; // 纹理坐标
 #include "inc/voxelspace.hpp"
 
 void main() {
-    // ESM
-    isESM = 1;
+    isShadowMap = 1;
     for (int i = 0; i < 3; i++) {
         vec4 vertex = gl_in[i].gl_Position;
         vertex /= vertex.w;
@@ -52,11 +51,11 @@ void main() {
      *
      * 会被绘制    不会被绘制
      */
-    if (abs(dot(localPos[0] - localPos[1], localPos[2] - localPos[1])) < 0.001) { return; }
+    // if (abs(dot(localPos[0] - localPos[1], localPos[2] - localPos[1])) < 0.001) { return; }
     if (length(localPos[0]) > voxelR) { return; }
 
     if (renderMode[0] == 0) {
-        isESM = 0;
+        isShadowMap = 0;
         // 三角形中心的坐标. 沿法线向内偏移
         // 此时 centerWorldPos 一定落在对应方块的体积内部
         vec3 centerLocalPos = (localPos[0] + localPos[1] + localPos[2]) / 3.f - normal[0] / 1024.f;

@@ -1,12 +1,12 @@
 #pragma once
 #include "inc/glsl.hpp"
 
-attribute vec4 at_tangent;
-attribute vec3 mc_Entity;
-attribute vec2 mc_midTexCoord;
+in vec4 at_tangent;
+in vec3 mc_Entity;
+in vec2 mc_midTexCoord;
 
 #ifdef GBUFFERS_ENTITIES
-attribute vec3 at_velocity;
+in vec3 at_velocity;
 #endif
 
 #include "inc/constants.hpp"
@@ -33,5 +33,5 @@ void main() {
 #else
     motionVector = vec3(0);
 #endif
-    gl_Position = gbufferProjection * gl_ModelViewMatrix * gl_Vertex;
+    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
 }

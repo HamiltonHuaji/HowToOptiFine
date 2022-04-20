@@ -6,6 +6,7 @@ vec2  texCoord = gl_FragCoord.xy / viewSize;
 ivec2 texelPos = ivec2(gl_FragCoord.xy);
 
 uniform sampler2D tex_diffuse_direct;
+out vec4 outColor0;
 
 #pragma rendertargets(7)
 void main() {
@@ -13,5 +14,5 @@ void main() {
     if (any(isnan(color))) {
         color = vec4(0);
     }
-    gl_FragData[0] = color;
+    outColor0 = color;
 }

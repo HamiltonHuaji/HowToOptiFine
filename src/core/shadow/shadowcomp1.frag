@@ -18,7 +18,7 @@ const float texelSize = 1.f / shadowMapResolution;
 
 #pragma rendertargets(0, 1)
 void main() {
-    if ((texelPos.x * 2 <= shadowMapResolution) || (texelPos.y * 2 <= shadowMapResolution)) {
+    if ((texelPos.x * 2 <= shadowMapResolution) || (texelPos.y * 2 <= shadowMapResolution) || DISABLE_SHADOWMAP_BLUR) {
         outColor0 = texelFetch(shadowcolor0, texelPos, 0);
         outColor1 = texelFetch(shadowcolor1, texelPos, 0);
     } else {

@@ -20,6 +20,7 @@
 #define tex_moments_history             colortex5 // HRR
 #define tex_diffuse_direct              colortex6 // HRR
 #define tex_diffuse_direct_history      colortex7 // HRR
+#define tex_all_history                 colortex8
 /* clang-format on */
 
 const bool colortex0Clear    = true;
@@ -30,6 +31,7 @@ const bool colortex4Clear    = true;
 const bool colortex5Clear    = false;
 const bool colortex6Clear    = true;
 const bool colortex7Clear    = false;
+const bool colortex8Clear    = false;
 const bool shadowcolor0Clear = true;
 const bool shadowcolor1Clear = true;
 
@@ -56,6 +58,7 @@ const int colortex4Format    = RGBA16F;
 const int colortex5Format    = RGBA16F;
 const int colortex6Format    = RGBA16F;
 const int colortex7Format    = RGBA16F;
+const int colortex8Format    = RGBA16F;
 const int colortex13Format   = RGBA32F;
 const int colortex14Format   = RGBA32F;
 const int colortex15Format   = RGBA32F;

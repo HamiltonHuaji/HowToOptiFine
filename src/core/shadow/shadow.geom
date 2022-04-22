@@ -13,6 +13,7 @@ flat in vec3 normal[];      // 法线(世界坐标)
 flat in vec3 localPos[];    // 局部坐标, 即世界坐标减去摄像机位置
 in vec2      texCoord[];    // 纹理坐标
 
+flat out vec3 fcolor;
 flat out vec4 data;
 flat out int  isShadowMap;
 out vec2      ftexCoord; // 纹理坐标
@@ -33,12 +34,12 @@ void main() {
         if (abs(vertex.y) >= 1) {
             return;
         }
-        float dist = length(vertex.xy);
-        float distortFactor = (1.0 - SHADOW_MAP_BIAS) + dist * SHADOW_MAP_BIAS ;
+        float dist          = length(vertex.xy);
+        float distortFactor = (1.0 - SHADOW_MAP_BIAS) + dist * SHADOW_MAP_BIAS;
         vertex.xy /= distortFactor;
         gl_Position = vec4(vertex.x * .5f + .5f, vertex.y * .5f + .5f, vertex.z, 1.f);
-        // data      = vec4(KelvinToRGB(sunTemperature) * sunIntensity, 1.f);
-        ftexCoord = texCoord[i];
+        ftexCoord   = texCoord[i];
+        fcolor      = color[i];
         EmitVertex();
     }
     EndPrimitive();

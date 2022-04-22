@@ -47,10 +47,10 @@ void main() {
 #elif   (COMPOSITE_OPTION==1)
         outColor0.rgb = texelFetch(tex_diffuse_direct, texelPos, 0).rgb;
 #elif   (COMPOSITE_OPTION==2)
-        outColor0.rgb = gd.diffuse * (texelFetch(tex_diffuse_direct, texelPos, 0).rgb + shadowColor(localPos, gd.normal));
+        outColor0.rgb = gd.diffuse * (texelFetch(tex_diffuse_direct, texelPos, 0).rgb + shadowColorNice(localPos, gd.normal, texelPos, gd.diffuse));
 #elif   (COMPOSITE_OPTION==3)
         // outColor0.rgb = aces(gd.diffuse * texelFetch(tex_diffuse_direct, texelPos, 0).rgb);
-        outColor0.rgb = shadowColor(localPos, gd.normal);
+        outColor0.rgb = shadowColorNice(localPos, gd.normal, texelPos, gd.diffuse);
 #endif
     }
     // if (isCube(gd.blockID) && !isEmissive(gd.blockID)) { discard; }

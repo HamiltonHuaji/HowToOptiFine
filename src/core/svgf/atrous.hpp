@@ -20,7 +20,7 @@ float computeVarianceCenter() {
     for (int yy = -radius; yy <= radius; yy++) {
         for (int xx = -radius; xx <= radius; xx++) {
             ivec2       p = texelPos + ivec2(xx, yy);
-            const float k = gaussKernel[abs(xx)][abs(yy)];
+            const float k = gaussKernel3[abs(xx)][abs(yy)];
             sum += texelFetch(tex_diffuse_direct, p, 0).a * k;
         }
     }

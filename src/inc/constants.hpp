@@ -7,7 +7,7 @@
 #define SAMPLE_PER_PIXEL 1 // [1 2 4 8 16 32 64]
 
 // 单条光线步进的最大长度
-#define MAX_RAY_LENGTH 24
+#define MAX_RAY_LENGTH 24 // [16 24 32 64 128]
 
 // 光源亮度乘数
 #define BRIGHTNESS 4 // [1 2 4 8 16 32]

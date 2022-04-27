@@ -16,6 +16,10 @@ flat out vec3 normal;      // 法线(世界坐标)
 flat out vec3 localPos;    // 局部坐标, 即世界坐标减去摄像机位置
 out vec2      texCoord;    // 纹理坐标
 
+// 绘制多次物体
+// 以避免使用几何着色器, 提高阴影 pass 的性能
+const int countInstances = 2;
+
 void main() {
     blockID = getBlockID(mc_Entity);
     if (isCube(blockID) || isFacingCube(blockID)) {

@@ -1,7 +1,7 @@
 #include "inc/glsl.hpp"
 
 layout(triangles) in;
-layout(triangle_strip, max_vertices = 8) out;
+layout(triangle_strip, max_vertices = 6) out;
 // layout(points, max_vertices = 1) out;
 
 flat in uint blockID[];     // 方块类型
@@ -37,7 +37,7 @@ void main() {
         float dist          = length(vertex.xy);
         float distortFactor = (1.0 - SHADOW_MAP_BIAS) + dist * SHADOW_MAP_BIAS;
         vertex.xy /= distortFactor;
-        gl_Position = vec4(vertex.x * .5f + .5f, vertex.y * .5f + .5f, vertex.z, 1.f);
+        gl_Position = vec4(vertex.x * .25f + .75f, vertex.y * .25f + .75f, vertex.z, 1.f);
         ftexCoord   = texCoord[i];
         fcolor      = color[i];
         EmitVertex();
@@ -72,15 +72,12 @@ void main() {
         packVoxelData(vd);
 
         ivec2 texelPos = getTexelPosFromVoxelPos(centerBlockPos);
-        data           = vd.rawData;
-
+        data        = vd.rawData;
         gl_Position = shadow_getGLPositionFromTexelPos(texelPos, .5f);
         EmitVertex();
         gl_Position = shadow_getGLPositionFromTexelPos(texelPos + ivec2(1, 0), .5f);
         EmitVertex();
         gl_Position = shadow_getGLPositionFromTexelPos(texelPos + ivec2(0, 1), .5f);
-        EmitVertex();
-        gl_Position = shadow_getGLPositionFromTexelPos(texelPos + ivec2(1, 1), .5f);
         EmitVertex();
         EndPrimitive();
     }

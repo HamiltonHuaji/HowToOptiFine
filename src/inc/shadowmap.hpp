@@ -28,7 +28,7 @@ vec3 shadowColor(vec3 localPos, vec3 worldNormal) {
     if (abs(shadowPosition.x) >= .999 || abs(shadowPosition.y) >= .999 || length(localPos) >= shadowDistance) {
         return KelvinToRGB(sunTemperature) * sunIntensity;
     }
-    vec2  shadowCoord = shadowPosition.xy * .25f + .75f;
+    vec2  shadowCoord = shadowPosition.xy * .125f + .875f;
     float d           = shadowPosition.z * .5 + .5;
 
     vec4 shadowData = texture(tex_shadowcolor, shadowCoord);
@@ -46,7 +46,8 @@ vec3 shadowColor(vec3 localPos, vec3 worldNormal) {
 
 // PCSS
 // 用法: shadowColor(localPos) * diffuseColor
-vec3 shadowColorNice(vec3 localPos, vec3 worldNormal, ivec2 texelPos, vec3 albedo) {
+vec3 shadowColorFine(vec3 localPos, vec3 worldNormal, ivec2 texelPos, vec3 albedo) {
+    // 指向光源
     vec3 shadowLightDirection = normalize(shadowModelViewInverse[2].xyz);
 
     float nDotL = dot(shadowLightDirection, normalize(worldNormal));
@@ -64,24 +65,8 @@ vec3 shadowColorNice(vec3 localPos, vec3 worldNormal, ivec2 texelPos, vec3 albed
     if (abs(shadowPosition.x) >= .999 || abs(shadowPosition.y) >= .999 || length(localPos) >= shadowDistance) {
         return KelvinToRGB(sunTemperature) * sunIntensity;
     }
-    vec2  shadowCoord = shadowPosition.xy * .25f + .75f;
+    vec2  shadowCoord = shadowPosition.xy * .125f + .875f;
     float d           = shadowPosition.z * .5 + .5;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     vec4 shadowData = texture(tex_shadowcolor, shadowCoord);
 
@@ -91,5 +76,18 @@ vec3 shadowColorNice(vec3 localPos, vec3 worldNormal, ivec2 texelPos, vec3 albed
     if (d >= z + dz * 4) {
         return vec3(0);
     }
+    //  else if (d >= z - dz * 4) {
+    //     // 屏幕空间阴影
+    //     // 追踪一个很短的距离即可
+    //     vec4 origin = gbufferProjection * gbufferModelView * vec4(localPos, 1.f);
+    //     origin /= origin.w;
+    //     for (int i=0; i<8; i++) {
+    //         vec4 p = gbufferProjection * gbufferModelView * vec4(localPos + shadowLightDirection * (float(i) / 128.f), 1.f);
+    //         p /= p.w;
+    //         if (p.z > texelFetch(tex_gbuffer_depth, ivec2(viewSize * (p.xy * .5f + .5f)), 0).r) {
+    //             return vec3(1,0,0);
+    //         }
+    //     }
+    // }
     return KelvinToRGB(sunTemperature) * sunIntensity;
 }

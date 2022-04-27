@@ -135,10 +135,9 @@ bool loadPrevData(out vec4 prevIllum, out vec2 prevMoments, out float historyLen
 
 out vec4 outColor0;
 out vec4 outColor1;
-out vec4 outColor2;
 
 // TAA, 重投影光照部分; 不更新颜色历史, 只更新二阶矩的历史和有效历史长度
-#pragma rendertargets(5, 6, 14)
+#pragma rendertargets(5, 6)
 void main() {
 
     float depth = texelFetch(tex_gbuffer_depth, texelPos, 0).r;
@@ -178,5 +177,4 @@ void main() {
 
     outColor0 = outMomentsHistory;
     outColor1 = outIllumination;
-    outColor2 = vec4(outIllumination.rgb, 1.f);
 }

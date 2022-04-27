@@ -50,22 +50,12 @@ sourceTemplates = {
         ".gsh": '#include "core/shadow/shadow.geom"',
         ".fsh": '#include "core/shadow/shadow.frag"',
     },
-    "shadowblur_y": {
-        ".vsh": '#include "core/full_screen.vert"',
-        ".fsh": '#include "core/shadow/shadowcomp1.frag"',
-    },
-    "shadowblur_x": {
-        ".vsh": '#include "core/full_screen.vert"',
-        ".fsh": '#include "core/shadow/shadowcomp2.frag"',
-    },
     "full_screen": {
         ".vsh": '#include "core/full_screen.vert"'
     }
 }
 virtualSourceFiles = {
     f"{sourcedir}/shadow": "shadow",
-    f"{sourcedir}/shadowcomp1": "shadowblur_y",
-    f"{sourcedir}/shadowcomp2": "shadowblur_x",
     f"{sourcedir}/gbuffers_basic": "main",
     f"{sourcedir}/gbuffers_skybasic": "discard",
     f"{sourcedir}/gbuffers_skytextured": "discard",

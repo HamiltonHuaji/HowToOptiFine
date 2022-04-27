@@ -41,11 +41,24 @@ float computeWeight(
     float weightIllum = exp(0.0 - max(weightLillum, 0.0) - max(weightZ, 0.0)) * weightNormal;
     return weightIllum;
 }
+// float computeWeight2(
+//     float depthCenter, float depthP, float phiDepth,
+//     vec3 normalCenter, vec3 normalP, float phiNormal,
+//     float luminanceIllumCenter, float luminanceIllumP, float phiIllum) {
+//     float weightNormal = pow(saturate(dot(normalCenter, normalP)), phiNormal);
+//     float weightZ      = (phiDepth == 0) ? 0.0f : abs(depthCenter - depthP) / phiDepth;
+//     float weightLillum = abs(luminanceIllumCenter - luminanceIllumP) / phiIllum;
+
+//     float weightIllum = exp(0.0 - max(weightLillum, 0.0) - max(weightZ, 0.0)) * weightNormal;
+//     return exp(0.0 - max(weightZ, 0.0));
+//     return exp(0.0 - max(weightLillum, 0.0));
+// }
 
 #ifndef LEVEL
 #define LEVEL 0
 #endif
 out vec4 outColor0;
+// out vec4 outColor1;
 
 #pragma rendertargets(6)
 void main() {
@@ -106,4 +119,17 @@ void main() {
     }
     vec4 filteredIllumination = vec4(sumIllumination / vec4(vec3(sumWIllumination), sumWIllumination * sumWIllumination));
     outColor0            = filteredIllumination;
+
+    // if (LEVEL==5) {
+    //     ivec2 p = ivec2(viewSize) / 2;
+    //     vec4  illuminationP      = texelFetch(tex_diffuse_direct, p, 0);
+    //     float illuminationIllumP = luminance(illuminationP.rgb);
+    //     vec3  normalP            = gBufferNormal(texelFetch(tex_gbuffer, p, 0));
+    //     float depthP             = linearDepth(texture(tex_gbuffer_depth, getTexCoordFromTexelPos(ivec2(viewSize), p)).r);
+    //     float w = computeWeight2(
+    //         depthCenter, depthP, phiDepth * length(vec2(texelPos - p) / float(stepSize)),
+    //         normalCenter, normalP, phiNormal,
+    //         illuminationIllumCenter, illuminationIllumP, phiIllum);
+    //     outColor1 = vec4(w);
+    // }
 }

@@ -44,7 +44,7 @@ vec4 raytrace_diffuse(vec3 voxelPos, mat3 tbn, uvec4 seed) {
                     r.ori = r.ori + r.dir * itd.t + exp2(-12) * itd.normal;
                     r.dir = generateDummyTBN(itd.normal) * stbnSampler(seed.xy + uvec2(Martin_Roberts_R2(bounce-1)*128.0f), seed.z);
                     // r.dir = generateDummyTBN(itd.normal) * uniform2dToHemisphere(random2d(seed + uvec4(0, 0, 0, bounce)));
-                    r.product *= itd.diffuse * lightDropdown(itd.t) * dot(r.dir, itd.normal);
+                    r.product *= itd.diffuse * lightDropdown(itd.t);
                     illuminance += r.product * vec4(shadowColor(getLocalPosFromVoxelPos(r.ori), itd.normal), 1.f);
                     // 应在此时考虑材质被日光的照亮程度, 为 illuminance 加上 r.product * RSM(r.ori)
                 }
